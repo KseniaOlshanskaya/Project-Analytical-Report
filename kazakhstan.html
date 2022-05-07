@@ -1,0 +1,1951 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+
+<!-- Yandex.RTB -->
+<script>window.yaContextCb=window.yaContextCb||[]</script>
+<script src="https://yandex.ru/ads/system/context.js" async></script>
+
+	<meta charset="utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+			
+		
+
+		<meta name="description" content="Обзоры, отчёты и новости по торговле между Россией и Казахстаном.">
+		<title>Обзоры и новости торговли России с Казахстаном</title>
+		<meta property="og:image" content="https://russian-trade.com/russian-trade-social-logo.jpg">
+
+		<meta name="robots" content="all">
+	<!-- viewport meta to reset iPhone inital scale -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<link rel="shortcut icon" href="https://russian-trade.com/favicon.ico" type="image/x-icon">
+	
+	<link href="" rel="stylesheet" type="text/css" media="all">
+		
+	<!--JQUERY и JQUERY UI-->
+	<link rel="stylesheet" href="/rtfiles/jqueryui/jquery-ui.min.css">
+	<script src="/rtfiles/jqueryui/external/jquery/jquery.js"></script>
+	<script src="/rtfiles/jqueryui/jquery-ui.min.js"></script>
+	<script src="/rtfiles/jqueryui/datepicker-ru.js"></script>
+	
+	<!--КАЛЕНДАРЬ И ...-->
+	
+
+	<!--Скрипт календаря и скрипт аякса-->
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$.datepicker.setDefaults({
+				/*regional: 'ru',*/
+				dateFormat: 'dd/mm/yy',
+				changeMonth: true,
+				changeYear: true,
+				yearRange: '1993:+0',
+				minDate: new Date(1993, 1 - 1, 1),
+				maxDate: 'today'			});
+			$('#curdatepicker').datepicker({
+				inline : true,
+				/*altField : '#curdatepickersend',*/
+				onSelect : function(){
+					var date=$(this).val();
+					$.ajax({
+						type: "POST",
+						url: "/ratespros.php",
+						data: { otherdate: date },
+						/*data: "d="+sentdate,*/
+						success: function(data){
+							$('#results').html(data);
+							window.location.hash = "#exchange-rates";
+						}
+					});
+					$('div#exchangetorub').hide();
+					return false;
+				}
+			});
+		});
+	</script>
+
+
+	<!--ВКЛАДКИ-->
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$( ".tabs" ).tabs();
+		});
+	</script>
+
+
+<!--ДЛЯ ВЫПАДАЮЩЕГО СПИСКА ФОРМЫ-->
+<!--http://www.marghoobsuleman.com/countries-dropdown-flags-->
+<!--The flag of Ecuador and Columbia is identical!-->
+<!--http://ivaynberg.github.io/select2/index.html#basics!!!!!!!!!!!!!!!!проверить: может совместить-->
+	<link rel="stylesheet" type="text/css" href="/rtfiles/css/msdropdown/dd.css" />
+	<script type="text/javascript" src="/rtfiles/jqueryui/msdropdown/jquery.dd.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/rtfiles/css/msdropdown/flags.css" />
+
+	<!--Скрипты для выпадающих списков-->
+	<script>
+		$(document).ready(function() {
+			$("#year1").msDropdown({openDirection:"alwaysUp"});
+			$("#year2").msDropdown({openDirection:"alwaysUp"});
+		})
+	</script>
+	<script>
+		$(document).ready(function() {
+			$(".country").msDropdown();
+		})
+	</script>
+	<script>
+		$(document).ready(function() {
+			$("#production").msDropdown();
+		})
+	</script>
+
+
+<!--ДЛЯ РАДИОКНОПОК ФОРМЫ (jquery подгружен раньше)-->
+<!--http://arthurgouveia.com/prettyCheckable/-->
+<!--http://www.jqueryscript.net/form/Default-Checkbox-Replacement-Plugin-jQuery-prettyCheckable.html-->
+<!--http://www.jqueryscript.net/demo/Default-Checkbox-Replacement-Plugin-jQuery-prettyCheckable/-->
+	<link rel="stylesheet" type="text/css" href="/rtfiles/jqueryui/prettyCheckable/prettyCheckable.css">
+	<script type="text/javascript" src="/rtfiles/jqueryui/prettyCheckable/prettyCheckable.js"></script>
+
+	<!--Скрипты для радиокнопок-->
+	<script>
+	$(document).ready(function() {
+		$('input.prettyCheckableMode1').each(function(){
+			$(this).prettyCheckable();
+		});
+	});
+	</script>
+	<script>
+	$(document).ready(function() {
+		$('input.prettyCheckableInterval1').each(function(){
+			$(this).prettyCheckable();
+		});
+	});
+	</script>
+	<script>
+	$(document).ready(function() {
+		$('input.prettyCheckableMode2').each(function(){
+			$(this).prettyCheckable();
+		});
+	});
+	</script>
+	<script>
+	$(document).ready(function() {
+		$('input.prettyCheckableInterval2').each(function(){
+			$(this).prettyCheckable();
+		});
+	});
+	</script>
+
+
+<!--Зависимость выводимых кварталов от года (в 2010 г. - только за целый год) и реальный выбор в форме (а не видимости)-->
+<script type="text/javascript">
+$(document).ready(function() {
+			$('div#tabs-1 div.clearfix:nth-child(5)').show();
+			$('div#tabs-1 div.clearfix:nth-child(6)').show(); /*статистика за 1 кв.*/
+			$('div#tabs-1 div.clearfix:nth-child(7)').show(); /*статистика за 2 кв.*/
+			$('div#tabs-1 div.clearfix:nth-child(8)').show(); /*статистика за 3 кв.*/
+			$('div#tabs-1 div.clearfix:nth-child(9)').show();
+			$('div#tabs-1 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен период слева*/
+			$('div#tabs-1 input#wholeyear1').attr('checked',true);
+			$('div#tabs-2 div.clearfix:nth-child(5)').show();
+			$('div#tabs-2 div.clearfix:nth-child(6)').show();
+			$('div#tabs-2 div.clearfix:nth-child(7)').show();
+			$('div#tabs-2 div.clearfix:nth-child(8)').show();
+			$('div#tabs-2 div.clearfix:nth-child(9)').show();
+			$('div#tabs-2 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен период слева*/
+			$('div#tabs-2 input#wholeyear2').attr('checked',true);
+	$('select[name="year1"]').change(function(){
+		var el = $(this).val();
+		if (el==2010)
+		{
+			$('div#tabs-1 div.clearfix:nth-child(5)').show();
+			$('div#tabs-1 div.clearfix:nth-child(6)').css('display','none');
+			$('div#tabs-1 div.clearfix:nth-child(7)').css('display','none');
+			$('div#tabs-1 div.clearfix:nth-child(8)').css('display','none');
+			$('div#tabs-1 div.clearfix:nth-child(9)').css('display','none');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечена кнопка слева - Весь год*/
+			$('div#tabs-1 input#wholeyear1').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2011)
+		{
+			$('div#tabs-1 div.clearfix:nth-child(5)').show();
+			$('div#tabs-1 div.clearfix:nth-child(6)').show();
+			$('div#tabs-1 div.clearfix:nth-child(7)').show();
+			$('div#tabs-1 div.clearfix:nth-child(8)').show();
+			$('div#tabs-1 div.clearfix:nth-child(9)').show();
+			$('div#tabs-1 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-1 input#wholeyear1').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2012)
+		{
+			$('div#tabs-1 div.clearfix:nth-child(5)').show();
+			$('div#tabs-1 div.clearfix:nth-child(6)').show();
+			$('div#tabs-1 div.clearfix:nth-child(7)').show();
+			$('div#tabs-1 div.clearfix:nth-child(8)').show();
+			$('div#tabs-1 div.clearfix:nth-child(9)').show();
+			$('div#tabs-1 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-1 input#wholeyear1').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2013)
+		{
+			$('div#tabs-1 div.clearfix:nth-child(5)').show();
+			$('div#tabs-1 div.clearfix:nth-child(6)').show();
+			$('div#tabs-1 div.clearfix:nth-child(7)').show();
+			$('div#tabs-1 div.clearfix:nth-child(8)').show();
+			$('div#tabs-1 div.clearfix:nth-child(9)').show();
+			$('div#tabs-1 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-1 input#wholeyear1').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2014)
+		{
+			$('div#tabs-1 div.clearfix:nth-child(5)').show();
+			$('div#tabs-1 div.clearfix:nth-child(6)').show();
+			$('div#tabs-1 div.clearfix:nth-child(7)').show();
+			$('div#tabs-1 div.clearfix:nth-child(8)').show();
+			$('div#tabs-1 div.clearfix:nth-child(9)').show();
+			$('div#tabs-1 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-1 input#wholeyear1').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2015)
+		{
+			$('div#tabs-1 div.clearfix:nth-child(5)').show();
+			$('div#tabs-1 div.clearfix:nth-child(6)').show();
+			$('div#tabs-1 div.clearfix:nth-child(7)').show();
+			$('div#tabs-1 div.clearfix:nth-child(8)').show();
+			$('div#tabs-1 div.clearfix:nth-child(9)').show();
+			$('div#tabs-1 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-1 input#wholeyear1').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2016)
+		{
+			$('div#tabs-1 div.clearfix:nth-child(5)').show();
+			$('div#tabs-1 div.clearfix:nth-child(6)').show();
+			$('div#tabs-1 div.clearfix:nth-child(7)').show();
+			$('div#tabs-1 div.clearfix:nth-child(8)').show();
+			$('div#tabs-1 div.clearfix:nth-child(9)').show();
+			$('div#tabs-1 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-1 input#wholeyear1').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2017)
+		{
+			$('div#tabs-1 div.clearfix:nth-child(5)').show();
+			$('div#tabs-1 div.clearfix:nth-child(6)').show();
+			$('div#tabs-1 div.clearfix:nth-child(7)').show();
+			$('div#tabs-1 div.clearfix:nth-child(8)').show();
+			$('div#tabs-1 div.clearfix:nth-child(9)').show();
+			$('div#tabs-1 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-1 input#wholeyear1').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2018)
+		{
+			$('div#tabs-1 div.clearfix:nth-child(5)').show();
+			$('div#tabs-1 div.clearfix:nth-child(6)').show();
+			$('div#tabs-1 div.clearfix:nth-child(7)').show();
+			$('div#tabs-1 div.clearfix:nth-child(8)').show();
+			$('div#tabs-1 div.clearfix:nth-child(9)').show();
+			$('div#tabs-1 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-1 input#wholeyear1').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2019)
+		{
+			$('div#tabs-1 div.clearfix:nth-child(5)').show();
+			$('div#tabs-1 div.clearfix:nth-child(6)').show();
+			$('div#tabs-1 div.clearfix:nth-child(7)').show();
+			$('div#tabs-1 div.clearfix:nth-child(8)').show();
+			$('div#tabs-1 div.clearfix:nth-child(9)').show();
+			$('div#tabs-1 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-1 input#wholeyear1').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2020)
+		{
+			$('div#tabs-1 div.clearfix:nth-child(5)').show();
+			$('div#tabs-1 div.clearfix:nth-child(6)').show();
+			$('div#tabs-1 div.clearfix:nth-child(7)').show();
+			$('div#tabs-1 div.clearfix:nth-child(8)').show();
+			$('div#tabs-1 div.clearfix:nth-child(9)').show();
+			$('div#tabs-1 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-1 input#wholeyear1').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2021)
+		{
+			$('div#tabs-1 div.clearfix:nth-child(5)').show();
+			$('div#tabs-1 div.clearfix:nth-child(6)').show();
+			$('div#tabs-1 div.clearfix:nth-child(7)').show();
+			$('div#tabs-1 div.clearfix:nth-child(8)').show();
+			$('div#tabs-1 div.clearfix:nth-child(9)').show();
+			$('div#tabs-1 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-1 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-1 input#wholeyear1').prop('checked',true); /*для фактической отметки в форме*/
+		}
+	});
+	$('select[name="year2"]').change(function(){
+		var el = $(this).val();
+		if (el==2010)
+		{
+			$('div#tabs-2 div.clearfix:nth-child(5)').show();
+			$('div#tabs-2 div.clearfix:nth-child(6)').css('display','none');
+			$('div#tabs-2 div.clearfix:nth-child(7)').css('display','none');
+			$('div#tabs-2 div.clearfix:nth-child(8)').css('display','none');
+			$('div#tabs-2 div.clearfix:nth-child(9)').css('display','none');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечена кнопка слева - Весь год*/
+			$('div#tabs-2 input#wholeyear2').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2011)
+		{
+			$('div#tabs-2 div.clearfix:nth-child(5)').show();
+			$('div#tabs-2 div.clearfix:nth-child(6)').show();
+			$('div#tabs-2 div.clearfix:nth-child(7)').show();
+			$('div#tabs-2 div.clearfix:nth-child(8)').show();
+			$('div#tabs-2 div.clearfix:nth-child(9)').show();
+			$('div#tabs-2 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-2 input#wholeyear2').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2012)
+		{
+			$('div#tabs-2 div.clearfix:nth-child(5)').show();
+			$('div#tabs-2 div.clearfix:nth-child(6)').show();
+			$('div#tabs-2 div.clearfix:nth-child(7)').show();
+			$('div#tabs-2 div.clearfix:nth-child(8)').show();
+			$('div#tabs-2 div.clearfix:nth-child(9)').show();
+			$('div#tabs-2 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-2 input#wholeyear2').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2013)
+		{
+			$('div#tabs-2 div.clearfix:nth-child(5)').show();
+			$('div#tabs-2 div.clearfix:nth-child(6)').show();
+			$('div#tabs-2 div.clearfix:nth-child(7)').show();
+			$('div#tabs-2 div.clearfix:nth-child(8)').show();
+			$('div#tabs-2 div.clearfix:nth-child(9)').show();
+			$('div#tabs-2 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-2 input#wholeyear2').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2014)
+		{
+			$('div#tabs-2 div.clearfix:nth-child(5)').show();
+			$('div#tabs-2 div.clearfix:nth-child(6)').show();
+			$('div#tabs-2 div.clearfix:nth-child(7)').show();
+			$('div#tabs-2 div.clearfix:nth-child(8)').show();
+			$('div#tabs-2 div.clearfix:nth-child(9)').show();
+			$('div#tabs-2 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-2 input#wholeyear2').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2015)
+		{
+			$('div#tabs-2 div.clearfix:nth-child(5)').show();
+			$('div#tabs-2 div.clearfix:nth-child(6)').show();
+			$('div#tabs-2 div.clearfix:nth-child(7)').show();
+			$('div#tabs-2 div.clearfix:nth-child(8)').show();
+			$('div#tabs-2 div.clearfix:nth-child(9)').show();
+			$('div#tabs-2 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-2 input#wholeyear2').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2016)
+		{
+			$('div#tabs-2 div.clearfix:nth-child(5)').show();
+			$('div#tabs-2 div.clearfix:nth-child(6)').show();
+			$('div#tabs-2 div.clearfix:nth-child(7)').show();
+			$('div#tabs-2 div.clearfix:nth-child(8)').show();
+			$('div#tabs-2 div.clearfix:nth-child(9)').show();
+			$('div#tabs-2 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-2 input#wholeyear2').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2017)
+		{
+			$('div#tabs-2 div.clearfix:nth-child(5)').show();
+			$('div#tabs-2 div.clearfix:nth-child(6)').show();
+			$('div#tabs-2 div.clearfix:nth-child(7)').show();
+			$('div#tabs-2 div.clearfix:nth-child(8)').show();
+			$('div#tabs-2 div.clearfix:nth-child(9)').show();
+			$('div#tabs-2 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-2 input#wholeyear2').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2018)
+		{
+			$('div#tabs-2 div.clearfix:nth-child(5)').show();
+			$('div#tabs-2 div.clearfix:nth-child(6)').show();
+			$('div#tabs-2 div.clearfix:nth-child(7)').show();
+			$('div#tabs-2 div.clearfix:nth-child(8)').show();
+			$('div#tabs-2 div.clearfix:nth-child(9)').show();
+			$('div#tabs-2 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-2 input#wholeyear2').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2019)
+		{
+			$('div#tabs-2 div.clearfix:nth-child(5)').show();
+			$('div#tabs-2 div.clearfix:nth-child(6)').show();
+			$('div#tabs-2 div.clearfix:nth-child(7)').show();
+			$('div#tabs-2 div.clearfix:nth-child(8)').show();
+			$('div#tabs-2 div.clearfix:nth-child(9)').show();
+			$('div#tabs-2 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-2 input#wholeyear2').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2020)
+		{
+			$('div#tabs-2 div.clearfix:nth-child(5)').show();
+			$('div#tabs-2 div.clearfix:nth-child(6)').show();
+			$('div#tabs-2 div.clearfix:nth-child(7)').show();
+			$('div#tabs-2 div.clearfix:nth-child(8)').show();
+			$('div#tabs-2 div.clearfix:nth-child(9)').show();
+			$('div#tabs-2 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-2 input#wholeyear2').prop('checked',true); /*для фактической отметки в форме*/
+		}
+		if (el==2021)
+		{
+			$('div#tabs-2 div.clearfix:nth-child(5)').show();
+			$('div#tabs-2 div.clearfix:nth-child(6)').show();
+			$('div#tabs-2 div.clearfix:nth-child(7)').show();
+			$('div#tabs-2 div.clearfix:nth-child(8)').show();
+			$('div#tabs-2 div.clearfix:nth-child(9)').show();
+			$('div#tabs-2 div.clearfix:nth-child(5) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(6) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(7) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(8) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(9) a').removeClass('checked');
+			$('div#tabs-2 div.clearfix:nth-child(5) a').addClass('checked'); /*отмечен Весь год*/
+			$('div#tabs-2 input#wholeyear2').prop('checked',true); /*для фактической отметки в форме*/
+		}
+	});
+}); /*end ready*/
+</script>
+
+
+<!--Скрипит кнопки submit-->
+<script>
+	$(document).ready(function() {
+		$('input[type=submit], button').button();
+	});
+</script>
+
+<link href="/rtfiles/css/main.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(62203612, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/62203612" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+<!-- Rating@Mail.ru counter -->
+<script type="text/javascript">
+var _tmr = _tmr || [];
+_tmr.push({id: "2569084", type: "pageView", start: (new Date()).getTime()});
+(function (d, w) {
+   var ts = d.createElement("script"); ts.type = "text/javascript"; ts.async = true;
+   ts.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//top-fwz1.mail.ru/js/code.js";
+   var f = function () {var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ts, s);};
+   if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); }
+})(document, window);
+</script><noscript><div style="position:absolute;left:-10000px;">
+<img src="//top-fwz1.mail.ru/counter?id=2569084;js=na" style="border:0;" height="1" width="1" alt="Рейтинг@Mail.ru" />
+</div></noscript>
+<!-- //Rating@Mail.ru counter -->
+
+<div id="wrapper">
+
+	<header id="header">
+		<div id="site-logo-name">
+			<div id="site-logo">
+				<a href="/">
+					<img src="/rtfiles/russian-trade-logo.png" alt="Russian trade logo" />
+				</a>
+			</div>
+						<p id="site-name">
+				<a href="/">Внешняя Торговля России</a>
+			</p>
+					</div>
+	</header>
+
+	<nav id="lang-menu">
+			<div id="lang-logo"><img src="/rtfiles/langicon.png" alt="language selection icon" height="17" width="12" /></div>
+			<a id="rulang" class="lang" href="https://russian-trade.com/"><span>Русский</span></a>
+			<a id="enlang" class="lang" href="https://en.russian-trade.com/"><span>English</span></a>
+			<a id="kolang" class="lang" href="https://ko.russian-trade.com/"><span>한국어</span></a>
+			<a id="cnlang" class="lang" href="https://cn.russian-trade.com/"><span>中文</span></a>
+			<a id="eslang" class="lang" href="https://es.russian-trade.com/"><span>Español</span></a>
+			<a id="jalang" class="lang" href="https://ja.russian-trade.com/"><span>日本語</span></a>
+			<a id="vilang" class="lang" href="https://vi.russian-trade.com/"><span>Việt</span></a>
+			<a id="delang" class="lang" href="https://de.russian-trade.com/"><span>Deutsch</span></a>
+			<a id="trlang" class="lang" href="https://tr.russian-trade.com/"><span>Türkçe</span></a>
+			<a id="frlang" class="lang" href="https://fr.russian-trade.com/"><span>Français</span></a>
+			<a id="itlang" class="lang" href="https://it.russian-trade.com/"><span>Italiano</span></a>
+			<a id="pllang" class="lang" href="https://pl.russian-trade.com/"><span>Polski</span></a>
+			<a id="rolang" class="lang" href="https://ro.russian-trade.com/"><span>Română</span></a>
+	</nav>
+
+	<div id="top-bar">
+		<!--<div id="top-left-button">
+			<a id="top-left-link" href="#middle-adv"><span>Статистика</span></a>
+		</div>-->
+<!--		<div id="top-right-button">
+			<a id="top-right-link" href="#exchange-rates"><span>Курсы валют</span></a>
+		</div>-->
+		<div id="top-adv">
+			<div id="top-adv-inner">
+
+<!-- Yandex.RTB R-A-222344-2 -->
+<div id="yandex_rtb_R-A-222344-2"></div>
+<script>window.yaContextCb.push(()=>{
+  Ya.Context.AdvManager.render({
+    renderTo: 'yandex_rtb_R-A-222344-2',
+    blockId: 'R-A-222344-2'
+  })
+})</script>
+
+			</div>
+		</div>
+	</div>
+
+
+<div id="main-wrapper">
+
+
+	<div id="middle">
+
+
+
+	
+
+
+	
+
+
+	
+
+
+
+
+
+
+
+
+		
+	
+
+
+	
+
+
+	
+
+
+	
+
+		
+<div class="tabs allbycountries" style="clear: both;">
+	<form class="well" action="" method="GET">
+		<div id="countryblock" class="input-wrapper">
+			<label for="country">Обзоры и новости по <span style="color:red;">стране</span>:</label>
+			<select name="countryforlisting" class="country">
+				<option value='abkhazia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ab">Абхазия (AB)</option>
+				<option value='australia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag au">Австралия (AU)</option>
+				<option value='austria' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag at">Австрия (AT)</option>
+				<option value='azerbaijan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag az">Азербайджан (AZ)</option>
+				<option value='albania' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag al">Албания (AL)</option>
+				<option value='algeria' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag dz">Алжир (DZ)</option>
+				<option value='angola' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ao">Ангола (AO)</option>
+				<option value='argentina' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ar">Аргентина (AR)</option>
+				<option value='armenia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag am">Армения (AM)</option>
+				<option value='afghanistan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag af">Афганистан (AF)</option>
+				<option value='bangladesh' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bd">Бангладеш (BD)</option>
+				<option value='belarus' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag by">Беларусь (BY)</option>
+				<option value='belgium' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag be">Бельгия (BE)</option>
+				<option value='bulgaria' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bg">Болгария (BG)</option>
+				<option value='bosnia-and-herzegovina' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ba">Босния и Герцеговина (BA)</option>
+				<option value='brazil' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag br">Бразилия (BR)</option>
+				<option value='united-kingdom' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gb">Великобритания (GB)</option>
+				<option value='hungary' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag hu">Венгрия (HU)</option>
+				<option value='venezuela' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ve">Венесуэла (VE)</option>
+				<option value='vietnam' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag vn">Вьетнам (VN)</option>
+				<option value='ghana' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gh">Гана (GH)</option>
+				<option value='guatemala' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gt">Гватемала (GT)</option>
+				<option value='germany' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag de">Германия (DE)</option>
+				<option value='honduras' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag hn">Гондурас (HN)</option>
+				<option value='hong-kong-sar-china' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag hk">Гонконг (HK)</option>
+				<option value='greece' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gr">Греция (GR)</option>
+				<option value='georgia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ge">Грузия (GE)</option>
+				<option value='denmark' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag dk">Дания (DK)</option>
+				<option value='djibouti' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag dj">Джибути (DJ)</option>
+				<option value='dominican-republic' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag do">Доминикана (DO)</option>
+				<option value='egypt' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag eg">Египет (EG)</option>
+				<option value='zimbabwe' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag zw">Зимбабве (ZW)</option>
+				<option value='israel' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag il">Израиль (IL)</option>
+				<option value='india' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag in">Индия (IN)</option>
+				<option value='indonesia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag id">Индонезия (ID)</option>
+				<option value='jordan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag jo">Иордания (JO)</option>
+				<option value='iraq' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag iq">Ирак (IQ)</option>
+				<option value='iran' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ir">Иран (IR)</option>
+				<option value='ireland' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ie">Ирландия (IE)</option>
+				<option value='iceland' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag is">Исландия (IS)</option>
+				<option value='spain' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag es">Испания (ES)</option>
+				<option value='italy' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag it">Италия (IT)</option>
+				<option value='yemen' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ye">Йемен (YE)</option>
+				<option value='kazakhstan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag kz">Казахстан (KZ)</option>
+				<option value='cambodia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag kh">Камбоджа (KH)</option>
+				<option value='canada' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ca">Канада (CA)</option>
+				<option value='qatar' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag qa">Катар (QA)</option>
+				<option value='kenya' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ke">Кения (KE)</option>
+				<option value='cyprus' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cy">Кипр (CY)</option>
+				<option value='kyrgyzstan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag kg">Киргизия (KG)</option>
+				<option value='china' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cn">Китай (CN)</option>
+				<option value='north-korea' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag kp">КНДР (KP)</option>
+				<option value='colombia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag co">Колумбия (CO)</option>
+				<option value='costa-rica' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cr">Коста-Рика (CR)</option>
+				<option value='ivory-coast' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ci">Кот-д’Ивуар (CI)</option>
+				<option value='cuba' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cu">Куба (CU)</option>
+				<option value='kuwait' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag kw">Кувейт (KW)</option>
+				<option value='latvia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag lv">Латвия (LV)</option>
+				<option value='lebanon' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag lb">Ливан (LB)</option>
+				<option value='libya' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ly">Ливия (LY)</option>
+				<option value='lithuania' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag lt">Литва (LT)</option>
+				<option value='luxembourg' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag lu">Люксембург (LU)</option>
+				<option value='macedonia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mk">Македония (MK)</option>
+				<option value='malawi' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mw">Малави (MW)</option>
+				<option value='malaysia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag my">Малайзия (MY)</option>
+				<option value='malta' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mt">Мальта (MT)</option>
+				<option value='morocco' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ma">Марокко (MA)</option>
+				<option value='mexico' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mx">Мексика (MX)</option>
+				<option value='mozambique' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mz">Мозамбик (MZ)</option>
+				<option value='moldova' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag md">Молдова (MD)</option>
+				<option value='mongolia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mn">Монголия (MN)</option>
+				<option value='myanmar' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mm">Мьянма (Бирма) (MM)</option>
+				<option value='nigeria' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ng">Нигерия (NG)</option>
+				<option value='netherlands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag nl">Нидерланды (NL)</option>
+				<option value='nicaragua' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ni">Никарагуа (NI)</option>
+				<option value='new-zealand' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag nz">Новая Зеландия (NZ)</option>
+				<option value='norway' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag no">Норвегия (NO)</option>
+				<option value='united-arab-emirates' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ae">ОАЭ (AE)</option>
+				<option value='pakistan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pk">Пакистан (PK)</option>
+				<option value='papua-new-guinea' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pg">Папуа – Новая Гвинея (PG)</option>
+				<option value='paraguay' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag py">Парагвай (PY)</option>
+				<option value='peru' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pe">Перу (PE)</option>
+				<option value='poland' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pl">Польша (PL)</option>
+				<option value='portugal' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pt">Португалия (PT)</option>
+				<option value='puerto-rico' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pr">Пуэрто-Рико (PR)</option>
+				<option value='south-korea' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag kr">Республика Корея (KR)</option>
+				<option value='romania' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ro">Румыния (RO)</option>
+				<option value='saudi-arabia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sa">Саудовская Аравия (SA)</option>
+				<option value='serbia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag rs">Сербия (RS)</option>
+				<option value='singapore' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sg">Сингапур (SG)</option>
+				<option value='syria' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sy">Сирия (SY)</option>
+				<option value='slovakia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sk">Словакия (SK)</option>
+				<option value='slovenia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag si">Словения (SI)</option>
+				<option value='united-states' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag us">Соединенные Штаты (US)</option>
+				<option value='sudan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sd">Судан (SD)</option>
+				<option value='tajikistan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tj">Таджикистан (TJ)</option>
+				<option value='thailand' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag th">Таиланд (TH)</option>
+				<option value='taiwan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tw">Тайвань (TW)</option>
+				<option value='tanzania' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tz">Танзания (TZ)</option>
+				<option value='togo' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tg">Того (TG)</option>
+				<option value='trinidad-and-tobago' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tt">Тринидад и Тобаго (TT)</option>
+				<option value='tunisia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tn">Тунис (TN)</option>
+				<option value='turkmenistan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tm">Туркменистан (TM)</option>
+				<option value='turkey' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tr">Турция (TR)</option>
+				<option value='uzbekistan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag uz">Узбекистан (UZ)</option>
+				<option value='ukraine' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ua">Украина (UA)</option>
+				<option value='uruguay' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag uy">Уругвай (UY)</option>
+				<option value='faroe-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag fo">Фарерские о-ва (FO)</option>
+				<option value='fiji' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag fj">Фиджи (FJ)</option>
+				<option value='philippines' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ph">Филиппины (PH)</option>
+				<option value='finland' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag fi">Финляндия (FI)</option>
+				<option value='france' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag fr">Франция (FR)</option>
+				<option value='croatia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag hr">Хорватия (HR)</option>
+				<option value='montenegro' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag me">Черногория (ME)</option>
+				<option value='czech-republic' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cz">Чехия (CZ)</option>
+				<option value='chile' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cl">Чили (CL)</option>
+				<option value='switzerland' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ch">Швейцария (CH)</option>
+				<option value='sweden' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag se">Швеция (SE)</option>
+				<option value='sri-lanka' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag lk">Шри-Ланка (LK)</option>
+				<option value='ecuador' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ec">Эквадор (EC)</option>
+				<option value='estonia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ee">Эстония (EE)</option>
+				<option value='ethiopia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag et">Эфиопия (ET)</option>
+				<option value='south-africa' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag za">ЮАР (ZA)</option>
+				<option value='south-ossetia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag os">Южная Осетия (OS)</option>
+				<option value='jamaica' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag jm">Ямайка (JM)</option>
+				<option value='japan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag jp">Япония (JP)</option>
+				<option value='australia-oceania' data-image="/rtfiles/images/msdropdown/icons/australia-oceania.gif">АВСТРАЛИЯ И ОКЕАНИЯ</option>
+				<option value='asia' data-image="/rtfiles/images/msdropdown/icons/asia.gif">АЗИЯ</option>
+				<option value='africa' data-image="/rtfiles/images/msdropdown/icons/africa.gif">АФРИКА</option>
+				<option value='europe' data-image="/rtfiles/images/msdropdown/icons/europe.gif">ЕВРОПА</option>
+				<option value='north-america' data-image="/rtfiles/images/msdropdown/icons/north-america.gif">СЕВЕРНАЯ АМЕРИКА</option>
+				<option value='south-america' data-image="/rtfiles/images/msdropdown/icons/south-america.gif">ЮЖНАЯ АМЕРИКА</option>
+				<option value='world' data-image="/rtfiles/images/msdropdown/icons/world.gif">ВЕСЬ МИР</option>
+			</select>
+		</div>
+		<div id="get_button" align="center"><input type="submit" value="Получить" /></div>
+	</form>
+</div>
+
+
+
+
+
+		<div id="reviews-block" style="margin-bottom: 5px;"> <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+			<div class="reviews-inscr">
+				<div class="reviews-inscr-inner smaller">Обзоры внешней торговли<br/> России с <span style="color: yellow;">Казахстаном</span></div>
+			</div>
+								<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2022-02/torgovlya-mezhdu-rossiey-i-kazahstanom-v-2021-g/"><span>12.02.2022 г.: </span>Торговля между Россией и Казахстаном в 2021 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2022-02/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-4-kv-2021-g/"><span>11.02.2022 г.: </span>Внешняя торговля России с Казахстаном в 4 кв. 2021 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2021-11/vneshnyaya-torgovlya-rossii-s-kazahstanom-za-9-mesyatsev-2021-g/"><span>15.11.2021 г.: </span>Внешняя торговля России с Казахстаном за 9 месяцев 2021 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2021-11/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-3-kv-2021-g/"><span>14.11.2021 г.: </span>Внешняя торговля России с Казахстаном в 3 кв. 2021 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2021-08/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-1-polugodii-2021-g/"><span>14.08.2021 г.: </span>Внешняя торговля России с Казахстаном в 1 полугодии 2021 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2021-08/vneshnyaya-torgovlya-rossii-s-kazahstanom-vo-2-kv-2021-g/"><span>13.08.2021 г.: </span>Внешняя торговля России с Казахстаном во 2 кв. 2021 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2021-05/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-1-kv-2021-g/"><span>15.05.2021 г.: </span>Внешняя торговля России с Казахстаном в 1 кв. 2021 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2021-02/torgovlya-mezhdu-rossiey-i-kazahstanom-v-2020-g/"><span>13.02.2021 г.: </span>Торговля между Россией и Казахстаном в 2020 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2021-02/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-4-kv-2020-g/"><span>13.02.2021 г.: </span>Внешняя торговля России с Казахстаном в 4 кв. 2020 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2020-11/vneshnyaya-torgovlya-rossii-s-kazahstanom-za-9-mesyatsev-2020-g/"><span>14.11.2020 г.: </span>Внешняя торговля России с Казахстаном за 9 месяцев 2020 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2020-11/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-3-kv-2020-g/"><span>12.11.2020 г.: </span>Внешняя торговля России с Казахстаном в 3 кв. 2020 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2020-08/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-1-polugodii-2020-g/"><span>13.08.2020 г.: </span>Внешняя торговля России с Казахстаном в 1 полугодии 2020 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2020-08/vneshnyaya-torgovlya-rossii-s-kazahstanom-vo-2-kv-2020-g/"><span>13.08.2020 г.: </span>Внешняя торговля России с Казахстаном во 2 кв. 2020 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2020-05/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-1-kv-2020-g/"><span>23.05.2020 г.: </span>Внешняя торговля России с Казахстаном в 1 кв. 2020 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2020-02/torgovlya-mezhdu-rossiey-i-kazahstanom-v-2019-g/"><span>13.02.2020 г.: </span>Торговля между Россией и Казахстаном в 2019 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2020-02/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-4-kv-2019-g/"><span>12.02.2020 г.: </span>Внешняя торговля России с Казахстаном в 4 кв. 2019 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2019-11/vneshnyaya-torgovlya-rossii-s-kazahstanom-za-9-mesyatsev-2019-g/"><span>14.11.2019 г.: </span>Внешняя торговля России с Казахстаном за 9 месяцев 2019 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2019-11/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-3-kv-2019-g/"><span>13.11.2019 г.: </span>Внешняя торговля России с Казахстаном в 3 кв. 2019 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2019-08/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-1-polugodii-2019-g/"><span>10.08.2019 г.: </span>Внешняя торговля России с Казахстаном в 1 полугодии 2019 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2019-08/vneshnyaya-torgovlya-rossii-s-kazahstanom-vo-2-kv-2019-g/"><span>09.08.2019 г.: </span>Внешняя торговля России с Казахстаном во 2 кв. 2019 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2019-05/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-1-kv-2019-g/"><span>14.05.2019 г.: </span>Внешняя торговля России с Казахстаном в 1 кв. 2019 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2019-02/torgovlya-mezhdu-rossiey-i-kazahstanom-v-2018-g/"><span>09.02.2019 г.: </span>Торговля между Россией и Казахстаном в 2018 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2019-02/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-4-kv-2018-g/"><span>08.02.2019 г.: </span>Внешняя торговля России с Казахстаном в 4 кв. 2018 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2018-11/vneshnyaya-torgovlya-rossii-s-kazahstanom-za-9-mesyatsev-2018-g/"><span>18.11.2018 г.: </span>Внешняя торговля России с Казахстаном за 9 месяцев 2018 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2018-11/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-3-kv-2018-g/"><span>17.11.2018 г.: </span>Внешняя торговля России с Казахстаном в 3 кв. 2018 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2018-08/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-1-polugodii-2018-g/"><span>17.08.2018 г.: </span>Внешняя торговля России с Казахстаном в 1 полугодии 2018 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2018-08/vneshnyaya-torgovlya-rossii-s-kazahstanom-vo-2-kv-2018-g/"><span>15.08.2018 г.: </span>Внешняя торговля России с Казахстаном во 2 кв. 2018 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2018-05/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-1-kv-2018-g/"><span>18.05.2018 г.: </span>Внешняя торговля России с Казахстаном в 1 кв. 2018 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2018-03/dinamika-torgovli-rossii-s-kazahstanom-v-2010-2017-godah/"><span>14.03.2018 г.: </span>Динамика торговли России с Казахстаном в 2010 - 2017 годах</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2018-02/torgovlya-mezhdu-rossiey-i-kazahstanom-v-2017-g/"><span>15.02.2018 г.: </span>Торговля между Россией и Казахстаном в 2017 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2018-02/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-4-kv-2017-g/"><span>12.02.2018 г.: </span>Внешняя торговля России с Казахстаном в 4 кв. 2017 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2017-12/vneshnyaya-torgovlya-rossii-s-kazahstanom-za-9-mesyatsev-2017-g/"><span>16.12.2017 г.: </span>Внешняя торговля России с Казахстаном за 9 месяцев 2017 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2017-11/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-3-kv-2017-g/"><span>26.11.2017 г.: </span>Внешняя торговля России с Казахстаном в 3 кв. 2017 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2017-09/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-1-polugodii-2017-g/"><span>01.09.2017 г.: </span>Внешняя торговля России с Казахстаном в 1 полугодии 2017 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2017-08/vneshnyaya-torgovlya-rossii-s-kazahstanom-vo-2-kv-2017-g/"><span>17.08.2017 г.: </span>Внешняя торговля России с Казахстаном во 2 кв. 2017 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2017-05/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-1-kv-2017-g/"><span>24.05.2017 г.: </span>Внешняя торговля России с Казахстаном в 1 кв. 2017 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2017-02/torgovlya-mezhdu-rossiey-i-kazahstanom-v-2016-g/"><span>28.02.2017 г.: </span>Торговля между Россией и Казахстаном в 2016 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2017-02/torgovlya-mezhdu-rossiey-i-kazahstanom-v-4-kv-2016-g/"><span>25.02.2017 г.: </span>Торговля между Россией и Казахстаном в 4 кв. 2016 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2016-12/torgovlya-mezhdu-rossiey-i-kazahstanom-v-3-kv-2016-g/"><span>14.12.2016 г.: </span>Торговля между Россией и Казахстаном в 3 кв. 2016 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2016-10/vneshnyaya-torgovlya-mezhdu-rossiey-i-kazahstanom-vo-2-kv-2016-g/"><span>02.10.2016 г.: </span>Внешняя торговля между Россией и Казахстаном во 2 кв. 2016 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2016-07/vneshnyaya-torgovlya-rossii-s-kazahstanom-v-1-kvartale-2016-goda/"><span>29.07.2016 г.: </span>Внешняя торговля России с Казахстаном в 1 квартале 2016 года</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2016-05/torgovlya-mezhdu-rossiey-i-kazahstanom-v-2015-g/"><span>01.05.2016 г.: </span>Торговля между Россией и Казахстаном в 2015 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2016-04/torgovlya-mezhdu-rossiey-i-kazahstanom-v-2014-g/"><span>01.04.2016 г.: </span>Торговля между Россией и Казахстаном в 2014 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2016-03/torgovlya-mezhdu-rossiey-i-kazahstanom-v-2013-g/"><span>01.03.2016 г.: </span>Торговля между Россией и Казахстаном в 2013 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2016-02/torgovlya-mezhdu-rossiey-i-kazahstanom-v-2012-g/"><span>01.02.2016 г.: </span>Торговля между Россией и Казахстаном в 2012 г.</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/reports-and-reviews/2016-01/torgovlya-mezhdu-rossiey-i-kazahstanom-v-2011-g/"><span>01.01.2016 г.: </span>Торговля между Россией и Казахстаном в 2011 г.</a>
+						</h2>
+					</div>
+									</div> <!--!!!!!!!!!!!!!!!!!!!!!!-->
+			
+		<div id="news-block" style="margin-bottom: 5px;"> <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+			<div class="news-inscr">
+				<div class="news-inscr-inner smaller">Новости внешней торговли<br/> России с <span style="color: yellow;">Казахстаном</span></div>
+			</div>
+								<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2021-02/rossiya-i-kazahstan-stavyat-zadachu-kompensirovat-v-2021-godu-spad-tovarooborota/"><span>11.02.2021 г.: </span>Россия и Казахстан ставят задачу компенсировать в 2021 году спад товарооборота</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2020-04/presechen-vyvoz-iz-rf-dezinfitsiruyuschih-sredstv-protivogazov-i-meditsinskih-masok/"><span>02.04.2020 г.: </span>Пресечен вывоз из РФ дезинфицирующих средств, противогазов и медицинских масок</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2020-04/presechena-popytka-nezakonnogo-vyvoza-v-kazahstan-800-respiratorov/"><span>02.04.2020 г.: </span>Пресечена попытка незаконного вывоза в Казахстан 800 респираторов</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2019-10/osnovnoy-obem-podnadzornoy-zernovoy-produktsii-otgruzhen-v-kazahstan/"><span>10.10.2019 г.: </span>Основной объем поднадзорной зерновой продукции отгружен в Казахстан</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2019-09/rossiya-snimaet-prepyatstviya-dlya-svobodnogo-dvizheniya-tovarov-iz-stran-eaes/"><span>05.09.2019 г.: </span>Россия снимает препятствия для свободного движения товаров из стран ЕАЭС</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2019-06/presechena-popytka-nezakonnogo-vvoza-v-rossiyu-rastitelnoy-produktsii-iz-kazahstana/"><span>03.06.2019 г.: </span>Пресечена попытка незаконного ввоза в Россию растительной продукции из Казахстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2018-11/rossiya-i-kazahstan-podpisali-memorandum-o-sotrudnichestve-v-oblasti-turizma/"><span>09.11.2018 г.: </span>Россия и Казахстан подписали Меморандум о сотрудничестве в области туризма </a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2018-10/zaderzhano-bolee-247-tonn-rastitelnoy-produktsii-iz-kazahstana-i-kyrgyzstana/"><span>02.10.2018 г.: </span>Задержано более 247 тонн растительной продукции из Казахстана и Кыргызстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2018-05/nursultan-nazarbaev-otmetil-vysokie-rezultaty-deyatelnosti-eaes/"><span>02.05.2018 г.: </span>Нурсултан Назарбаев отметил высокие результаты деятельности ЕАЭС</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2018-03/presechen-nezakonnyy-vvoz-v-rossiyu-57-t-shkur-krupnogo-rogatogo-skota-iz-kazahstana/"><span>22.03.2018 г.: </span>Пресечён незаконный ввоз в Россию 57 т шкур крупного рогатого скота из Казахстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2018-03/presechen-vvoz-okolo-100-tonn-podkarantinnoy-produktsii-iz-kazahstana-i-kyrgyzstana/"><span>12.03.2018 г.: </span>Пресечён ввоз около 100 тонн подкарантинной продукции из Казахстана и Кыргызстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2018-02/presechen-vvoz-160-tonn-mandarinov-v-orenburgskuyu-oblast-rossii-iz-kazahstana/"><span>07.02.2018 г.: </span>Пресечён ввоз 160 тонн мандаринов в Оренбургскую область России из Казахстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2017-12/rossiya-mozhet-zapretit-postavki-rastitelnoy-produktsii-s-territorii-kazahstana/"><span>13.12.2017 г.: </span>Россия может запретить поставки растительной продукции с территории Казахстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2017-08/zapreschen-vvoz-v-rossiyu-bolee-600-t-selhozproduktsii-iz-kazahstana-i-kyrgyzstana/"><span>01.08.2017 г.: </span>Запрещён ввоз в Россию более 600 т сельхозпродукции из Казахстана и Кыргызстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2017-06/rossiya-obespokoena-reeksportom-nelegalnoy-produktsii-cherez-kazahstan/"><span>08.06.2017 г.: </span>Россия обеспокоена реэкспортом нелегальной продукции через Казахстан</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2017-05/presechen-vvoz-v-rossiyu-60-tonn-luka-iz-kazahstana/"><span>12.05.2017 г.: </span>Пресечён ввоз в Россию 60 тонн лука из Казахстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2017-04/vozvrascheno-bolee-222-tonn-podkarantinnoy-produktsii-v-kazahstan/"><span>25.04.2017 г.: </span>Возвращено более 222 тонн подкарантинной продукции в Казахстан</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2017-04/zapreschen-vvoz-v-rossiyu-bolee-150-t-selhozproduktsii-iz-kazahstana-i-kyrgyzstana/"><span>17.04.2017 г.: </span>Запрещен ввоз в Россию более 150 т сельхозпродукции из Казахстана и Кыргызстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2016-12/predotvraschen-vvoz-v-rossiyu-40-t-pshenitsy-iz-kazahstana/"><span>19.12.2016 г.: </span>Предотвращён ввоз в Россию 40 т пшеницы из Казахстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2016-10/kazahstan-zanimaet-vtoroe-mesto-po-obemu-torgovli-s-rossiey/"><span>04.10.2016 г.: </span>Казахстан занимает второе место по объему торговли с Россией</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2016-10/predotvraschen-vvoz-v-novosibirskuyu-oblast-47-t-podkarantinnoy-produktsii/"><span>03.10.2016 г.: </span>Предотвращён ввоз в Новосибирскую область 47 т подкарантинной продукции</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2016-09/otmeneny-ogranicheniya-na-postavki-iz-rossii-v-kazahstan-zhivotnoy-produktsii/"><span>02.09.2016 г.: </span>Отменены ограничения на поставки из России в Казахстан животной продукции</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2016-07/tovarooborot-kazahstana-s-rossiey-i-kitaem-rezko-snizilsya/"><span>02.07.2016 г.: </span>Товарооборот Казахстана с Россией и Китаем резко снизился</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2016-04/presechen-vvoz-v-rossiyu-bolee-8-tysyach-zhivyh-cherepah-iz-kazahstana/"><span>14.04.2016 г.: </span>Пресечён ввоз в Россию более 8 тысяч живых черепах из Казахстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2016-03/presechen-vvoz-v-rossiyu-77-tonn-podkarantinnoy-produktsii-iz-kazahstana/"><span>23.03.2016 г.: </span>Пресечён ввоз в Россию 77 тонн подкарантинной продукции из Казахстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2016-03/kazahstan-mozhet-zanyat-nishu-postavschika-myasa-v-kitay-i-rossiyu/"><span>17.03.2016 г.: </span>Казахстан может занять нишу поставщика мяса в Китай и Россию</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2016-02/60-tonn-kormov-dlya-zhivotnyh-vozvrascheny-v-kazahstan/"><span>16.02.2016 г.: </span>60 тонн кормов для животных возвращены в Казахстан</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2016-01/presechen-nezakonnyy-vvoz-v-rossiyu-morkovi-i-pshenitsy-iz-kazahstana/"><span>29.01.2016 г.: </span>Пресечён незаконный ввоз в Россию моркови и пшеницы из Казахстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2016-01/eaes-sposobstvuet-razvitiyu-rossiysko-kazahskogo-investitsionnogo-sotrudnichestva/"><span>27.01.2016 г.: </span>ЕАЭС способствует развитию российско-казахского инвестиционного сотрудничества</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2016-01/vstupil-v-silu-protokol-o-realizatsii-obyazatelstv-kazahstana-po-uchastiyu-v-vto/"><span>11.01.2016 г.: </span>Вступил в силу Протокол о реализации обязательств Казахстана по участию в ВТО</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2015-12/presechen-vvoz-v-rossiyu-400-t-podkarantinnoy-produktsii-iz-kazahstana/"><span>28.12.2015 г.: </span>Пресечён ввоз в Россию 400 т подкарантинной продукции из Казахстана</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2015-12/natsbank-kazahstana-vopros-edinoy-valyuty-v-stranah-eaes-ne-obsuzhdaetsya/"><span>22.12.2015 г.: </span>Нацбанк Казахстана: вопрос единой валюты в странах ЕАЭС не обсуждается</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2015-09/vozvrascheny-v-kazahstan-tri-partii-melkogo-rogatogo-skota/"><span>21.09.2015 г.: </span>Возвращены в Казахстан три партии мелкого рогатого скота</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2015-09/rossiya-i-kazahstan-obsudili-mery-dlya-obespecheniya-kachestva-pischevoy-produktsii/"><span>17.09.2015 г.: </span>Россия и Казахстан обсудили меры для обеспечения качества пищевой продукции</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2015-06/prodolzhayutsya-narusheniya-pri-vvoze-syra-iz-respubliki-kazahstan/"><span>02.06.2015 г.: </span>Продолжаются нарушения при ввозе сыра из Республики Казахстан</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2015-05/mezhdu-kazahstanom-i-rossiey-net-torgovoy-voyny/"><span>23.05.2015 г.: </span>Между Казахстаном и Россией нет «торговой войны»</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2015-05/kazahstan-vremenno-ogranichil-vvoz-ptitsevodcheskoy-produktsii-iz-rossii/"><span>01.05.2015 г.: </span>Казахстан временно ограничил ввоз птицеводческой продукции из России</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2015-04/122-5-tonn-ovoschey-iz-kazahstana-ne-dopuscheny-k-vvozu-v-rossiyu/"><span>27.04.2015 г.: </span>122,5 тонн овощей из Казахстана не допущены к ввозу в Россию</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2015-04/kazahstan-isklyuchaet-vozmozhnost-vvedeniya-edinoy-valyuty-v-eaes/"><span>23.04.2015 г.: </span>Казахстан исключает возможность введения единой валюты в ЕАЭС</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2015-04/o-sluchayah-nesootvetstviya-kazahskoy-produktsii-trebovaniyam-kachestva-i-bezopasnosti/"><span>10.04.2015 г.: </span>О случаях несоответствия казахской продукции требованиям качества и безопасности</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2015-04/rossiya-i-kazahstan-mogut-podpisat-soglashenie-o-stroitelstve-aes-do-kontsa-iyunya/"><span>08.04.2015 г.: </span>Россия и Казахстан могут подписать соглашение о строительстве АЭС до конца июня</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2015-03/presechen-vvoz-iz-kazahstana-v-omskuyu-oblast-58-5-t-polskih-yablok/"><span>19.03.2015 г.: </span>Пресечён ввоз из Казахстана в Омскую область 58,5 т польских яблок</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2015-03/prezident-kazahstana-ratifitsiroval-soglashenie-s-rossiey-o-postavkah-nefti/"><span>18.03.2015 г.: </span>Президент Казахстана ратифицировал соглашение с Россией о поставках нефти</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2014-12/v-kazahstan-stalo-postupat-podeshevevshee-toplivo-iz-rossii/"><span>10.12.2014 г.: </span>В Казахстан стало поступать подешевевшее топливо из России</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2014-11/kazahstan-zapretil-realizatsiyu-ryada-marok-rossiyskoy-alkogolnoy-produktsii/"><span>19.11.2014 г.: </span>Казахстан запретил реализацию ряда марок российской алкогольной продукции</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2014-11/kazahstan-hochet-sozdat-zernovoy-hab-s-rossiey/"><span>18.11.2014 г.: </span>Казахстан хочет создать зерновой хаб с Россией</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2014-11/v-kazahstane-zaregistrirovano-bolee-10-5-tys-rossiyskih-kompaniy/"><span>06.11.2014 г.: </span>В Казахстане зарегистрировано более 10,5 тыс. российских компаний</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2014-10/rossiya-i-kazahstan-budut-sotrudnichat-v-stroitelstve-aes-v-kazahstane/"><span>01.10.2014 г.: </span>Россия и Казахстан будут сотрудничать в строительстве АЭС в Казахстане</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2014-09/rossiya-kazahstan-i-belorussiya-sozdayut-obschuyu-transportno-logisticheskuyu-set/"><span>05.09.2014 г.: </span>Россия, Казахстан и Белоруссия создают общую транспортно-логистическую сеть</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2014-08/kazahstan-predlozhil-stroit-rossiysko-kitayskiy-gazoprovod-cherez-svoyu-zemlyu/"><span>28.08.2014 г.: </span>Казахстан предложил строить российско-китайский газопровод через свою землю</a>
+						</h2>
+					</div>
+									<div class="hot-story">
+						<h2 style="margin: 0;">
+							<a class="newstab ui-corner-all" href="/news/2014-08/kazahstan-budet-zakupat-detali-dlya-vagonov-bez-posrednikov/"><span>06.08.2014 г.: </span>Казахстан будет закупать детали для вагонов без посредников</a>
+						</h2>
+					</div>
+									</div> <!--!!!!!!!!!!!!!!!!!!!!!!-->
+
+
+
+
+
+
+
+
+		<div id="middle-adv" style="clear: both;">
+			<div id="middle-adv-inner" style="margin-top: 0;">
+
+
+
+<!-- Yandex.RTB R-A-222344-3 -->
+<div id="yandex_rtb_R-A-222344-3"></div>
+<script>window.yaContextCb.push(()=>{
+  Ya.Context.AdvManager.render({
+    renderTo: 'yandex_rtb_R-A-222344-3',
+    blockId: 'R-A-222344-3'
+  })
+})</script>
+
+
+
+			</div>
+		</div>
+
+
+
+
+
+
+
+
+
+
+
+
+		<div id="stat-inscr">
+			<div id="stat-inscr-inner">Статистика внешней торговли России<br/><span>Федеральная таможенная служба России</span></div>
+		</div>
+
+		
+		
+		<div class="tabs rawstat">
+			<ul>
+				<li><a href="#tabs-1">По странам</a></li>
+				<li><a href="#tabs-2">По продукции</a></li>
+			</ul>
+			<div id="tabs-1">
+				<form class="well" action="" method="GET">
+					<div id="countryblock" class="input-wrapper">
+						<label class="toplabel" for="country">Страна</label>
+						<select name="country" class="country">
+															<option value='abkhazia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ab">Абхазия (AB)</option>
+															<option value='australia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag au">Австралия (AU)</option>
+															<option value='austria' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag at">Австрия (AT)</option>
+															<option value='azerbaijan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag az">Азербайджан (AZ)</option>
+															<option value='aland-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ax">Аландские о-ва (AX)</option>
+															<option value='albania' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag al">Албания (AL)</option>
+															<option value='algeria' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag dz">Алжир (DZ)</option>
+															<option value='american-samoa' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag as">Американское Самоа (AS)</option>
+															<option value='anguilla' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ai">Ангилья (AI)</option>
+															<option value='angola' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ao">Ангола (AO)</option>
+															<option value='andorra' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ad">Андорра (AD)</option>
+															<option value='antarctica' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag aq">Антарктида (AQ)</option>
+															<option value='antigua-and-barbuda' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ag">Антигуа и Барбуда (AG)</option>
+															<option value='argentina' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ar">Аргентина (AR)</option>
+															<option value='armenia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag am">Армения (AM)</option>
+															<option value='aruba' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag aw">Аруба (AW)</option>
+															<option value='afghanistan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag af">Афганистан (AF)</option>
+															<option value='bahamas' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bs">Багамские о-ва (BS)</option>
+															<option value='bangladesh' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bd">Бангладеш (BD)</option>
+															<option value='barbados' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bb">Барбадос (BB)</option>
+															<option value='bahrain' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bh">Бахрейн (BH)</option>
+															<option value='belarus' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag by">Беларусь (BY)</option>
+															<option value='belize' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bz">Белиз (BZ)</option>
+															<option value='belgium' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag be">Бельгия (BE)</option>
+															<option value='benin' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bj">Бенин (BJ)</option>
+															<option value='bermuda' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bm">Бермудские о-ва (BM)</option>
+															<option value='bulgaria' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bg">Болгария (BG)</option>
+															<option value='bolivia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bo">Боливия (BO)</option>
+															<option value='caribbean-netherlands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bq">Бонэйр, Синт-Эстатиус и Саба (BQ)</option>
+															<option value='bosnia-and-herzegovina' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ba">Босния и Герцеговина (BA)</option>
+															<option value='botswana' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bw">Ботсвана (BW)</option>
+															<option value='brazil' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag br">Бразилия (BR)</option>
+															<option value='british-indian-ocean-territory' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag io">Британская территория в Индийском океане (IO)</option>
+															<option value='brunei' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bn">Бруней-Даруссалам (BN)</option>
+															<option value='burkina-faso' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bf">Буркина-Фасо (BF)</option>
+															<option value='burundi' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bi">Бурунди (BI)</option>
+															<option value='bhutan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bt">Бутан (BT)</option>
+															<option value='vanuatu' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag vu">Вануату (VU)</option>
+															<option value='vatican-city' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag va">Ватикан (VA)</option>
+															<option value='united-kingdom' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gb">Великобритания (GB)</option>
+															<option value='hungary' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag hu">Венгрия (HU)</option>
+															<option value='venezuela' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ve">Венесуэла (VE)</option>
+															<option value='british-virgin-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag vg">Виргинские о-ва (Британские) (VG)</option>
+															<option value='us-virgin-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag vi">Виргинские о-ва (США) (VI)</option>
+															<option value='us-outlying-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag um">Внешние малые о-ва (США) (UM)</option>
+															<option value='timor-leste' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tl">Восточный Тимор (TL)</option>
+															<option value='vietnam' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag vn">Вьетнам (VN)</option>
+															<option value='gabon' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ga">Габон (GA)</option>
+															<option value='haiti' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ht">Гаити (HT)</option>
+															<option value='guyana' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gy">Гайана (GY)</option>
+															<option value='gambia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gm">Гамбия (GM)</option>
+															<option value='ghana' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gh">Гана (GH)</option>
+															<option value='guadeloupe' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gp">Гваделупа (GP)</option>
+															<option value='guatemala' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gt">Гватемала (GT)</option>
+															<option value='guinea' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gn">Гвинея (GN)</option>
+															<option value='guinea-bissau' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gw">Гвинея-Бисау (GW)</option>
+															<option value='germany' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag de">Германия (DE)</option>
+															<option value='guernsey' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gg">Гернси (GG)</option>
+															<option value='gibraltar' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gi">Гибралтар (GI)</option>
+															<option value='honduras' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag hn">Гондурас (HN)</option>
+															<option value='hong-kong-sar-china' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag hk">Гонконг (HK)</option>
+															<option value='grenada' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gd">Гренада (GD)</option>
+															<option value='greenland' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gl">Гренландия (GL)</option>
+															<option value='greece' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gr">Греция (GR)</option>
+															<option value='georgia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ge">Грузия (GE)</option>
+															<option value='guam' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gu">Гуам (GU)</option>
+															<option value='denmark' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag dk">Дания (DK)</option>
+															<option value='jersey' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag je">Джерси (JE)</option>
+															<option value='djibouti' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag dj">Джибути (DJ)</option>
+															<option value='dominica' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag dm">Доминика (DM)</option>
+															<option value='dominican-republic' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag do">Доминиканская Республика (DO)</option>
+															<option value='european-union' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag eu">Европейский союз (EU)</option>
+															<option value='egypt' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag eg">Египет (EG)</option>
+															<option value='zambia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag zm">Замбия (ZM)</option>
+															<option value='western-sahara' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag eh">Западная Сахара (EH)</option>
+															<option value='zimbabwe' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag zw">Зимбабве (ZW)</option>
+															<option value='israel' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag il">Израиль (IL)</option>
+															<option value='india' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag in">Индия (IN)</option>
+															<option value='indonesia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag id">Индонезия (ID)</option>
+															<option value='jordan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag jo">Иордания (JO)</option>
+															<option value='iraq' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag iq">Ирак (IQ)</option>
+															<option value='iran' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ir">Иран (IR)</option>
+															<option value='ireland' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ie">Ирландия (IE)</option>
+															<option value='iceland' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag is">Исландия (IS)</option>
+															<option value='spain' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag es">Испания (ES)</option>
+															<option value='italy' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag it">Италия (IT)</option>
+															<option value='yemen' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ye">Йемен (YE)</option>
+															<option value='cape-verde' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cv">Кабо-Верде (CV)</option>
+															<option value='kazakhstan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag kz">Казахстан (KZ)</option>
+															<option value='cayman-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ky">Каймановы о-ва (KY)</option>
+															<option value='cambodia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag kh">Камбоджа (KH)</option>
+															<option value='cameroon' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cm">Камерун (CM)</option>
+															<option value='canada' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ca">Канада (CA)</option>
+															<option value='qatar' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag qa">Катар (QA)</option>
+															<option value='kenya' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ke">Кения (KE)</option>
+															<option value='cyprus' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cy">Кипр (CY)</option>
+															<option value='kyrgyzstan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag kg">Киргизия (KG)</option>
+															<option value='kiribati' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ki">Кирибати (KI)</option>
+															<option value='china' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cn">Китай (CN)</option>
+															<option value='north-korea' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag kp">КНДР (KP)</option>
+															<option value='cocos-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cc">Кокосовые о-ва (CC)</option>
+															<option value='colombia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag co">Колумбия (CO)</option>
+															<option value='comoros' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag km">Коморские о-ва (KM)</option>
+															<option value='congo-brazzaville' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cg">Конго - Браззавиль (CG)</option>
+															<option value='congo-kinshasa' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cd">Конго - Киншаса (CD)</option>
+															<option value='costa-rica' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cr">Коста-Рика (CR)</option>
+															<option value='ivory-coast' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ci">Кот-д’Ивуар (CI)</option>
+															<option value='cuba' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cu">Куба (CU)</option>
+															<option value='kuwait' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag kw">Кувейт (KW)</option>
+															<option value='curacao' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cw">Кюрасао (CW)</option>
+															<option value='laos' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag la">Лаос (LA)</option>
+															<option value='latvia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag lv">Латвия (LV)</option>
+															<option value='lesotho' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ls">Лесото (LS)</option>
+															<option value='liberia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag lr">Либерия (LR)</option>
+															<option value='lebanon' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag lb">Ливан (LB)</option>
+															<option value='libya' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ly">Ливия (LY)</option>
+															<option value='lithuania' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag lt">Литва (LT)</option>
+															<option value='liechtenstein' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag li">Лихтенштейн (LI)</option>
+															<option value='luxembourg' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag lu">Люксембург (LU)</option>
+															<option value='mauritius' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mu">Маврикий (MU)</option>
+															<option value='mauritania' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mr">Мавритания (MR)</option>
+															<option value='madagascar' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mg">Мадагаскар (MG)</option>
+															<option value='mayotte' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag yt">Майотта (YT)</option>
+															<option value='macau-sar-china' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mo">Макао (особый район) (MO)</option>
+															<option value='macedonia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mk">Македония (MK)</option>
+															<option value='malawi' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mw">Малави (MW)</option>
+															<option value='malaysia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag my">Малайзия (MY)</option>
+															<option value='mali' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ml">Мали (ML)</option>
+															<option value='maldives' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mv">Мальдивские о-ва (MV)</option>
+															<option value='malta' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mt">Мальта (MT)</option>
+															<option value='morocco' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ma">Марокко (MA)</option>
+															<option value='martinique' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mq">Мартиника (MQ)</option>
+															<option value='marshall-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mh">Маршалловы о-ва (MH)</option>
+															<option value='mexico' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mx">Мексика (MX)</option>
+															<option value='mozambique' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mz">Мозамбик (MZ)</option>
+															<option value='moldova' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag md">Молдова (MD)</option>
+															<option value='monaco' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mc">Монако (MC)</option>
+															<option value='mongolia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mn">Монголия (MN)</option>
+															<option value='montserrat' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ms">Монтсеррат (MS)</option>
+															<option value='myanmar' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mm">Мьянма (Бирма) (MM)</option>
+															<option value='namibia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag na">Намибия (NA)</option>
+															<option value='nauru' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag nr">Науру (NR)</option>
+															<option value='unknown-region' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag nnn">Неизвестный регион (NNN)</option>
+															<option value='nepal' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag np">Непал (NP)</option>
+															<option value='niger' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ne">Нигер (NE)</option>
+															<option value='nigeria' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ng">Нигерия (NG)</option>
+															<option value='netherlands-antilles' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag an">Нидерландские Антильские о-ва (AN)</option>
+															<option value='netherlands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag nl">Нидерланды (NL)</option>
+															<option value='nicaragua' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ni">Никарагуа (NI)</option>
+															<option value='niue' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag nu">Ниуэ (NU)</option>
+															<option value='new-zealand' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag nz">Новая Зеландия (NZ)</option>
+															<option value='new-caledonia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag nc">Новая Каледония (NC)</option>
+															<option value='norway' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag no">Норвегия (NO)</option>
+															<option value='bouvet-island' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bv">О-в Буве (BV)</option>
+															<option value='isle-of-man' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag im">О-в Мэн (IM)</option>
+															<option value='norfolk-island' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag nf">О-в Норфолк (NF)</option>
+															<option value='christmas-island' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cx">О-в Рождества (CX)</option>
+															<option value='saint-helena' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sh">О-в Св. Елены (SH)</option>
+															<option value='cook-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ck">О-ва Кука (CK)</option>
+															<option value='turks-and-caicos-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tc">О-ва Тёркс и Кайкос (TC)</option>
+															<option value='heard-and-mcdonald-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag hm">О-ва Херд и Макдональд (HM)</option>
+															<option value='united-arab-emirates' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ae">ОАЭ (AE)</option>
+															<option value='oman' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag om">Оман (OM)</option>
+															<option value='pakistan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pk">Пакистан (PK)</option>
+															<option value='palau' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pw">Палау (PW)</option>
+															<option value='palestinian-territories' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ps">Палестинские территории (PS)</option>
+															<option value='panama' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pa">Панама (PA)</option>
+															<option value='papua-new-guinea' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pg">Папуа – Новая Гвинея (PG)</option>
+															<option value='paraguay' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag py">Парагвай (PY)</option>
+															<option value='peru' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pe">Перу (PE)</option>
+															<option value='pitcairn-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pn">Питкэрн (PN)</option>
+															<option value='poland' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pl">Польша (PL)</option>
+															<option value='portugal' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pt">Португалия (PT)</option>
+															<option value='puerto-rico' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pr">Пуэрто-Рико (PR)</option>
+															<option value='south-korea' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag kr">Республика Корея (KR)</option>
+															<option value='reunion' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag re">Реюньон (RE)</option>
+															<option value='russia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ru">Россия (RU)</option>
+															<option value='rwanda' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag rw">Руанда (RW)</option>
+															<option value='romania' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ro">Румыния (RO)</option>
+															<option value='el-salvador' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sv">Сальвадор (SV)</option>
+															<option value='samoa' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ws">Самоа (WS)</option>
+															<option value='san-marino' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sm">Сан-Марино (SM)</option>
+															<option value='sao-tome-and-principe' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag st">Сан-Томе и Принсипи (ST)</option>
+															<option value='saudi-arabia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sa">Саудовская Аравия (SA)</option>
+															<option value='swaziland' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sz">Свазиленд (SZ)</option>
+															<option value='northern-mariana-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mp">Северные Марианские о-ва (MP)</option>
+															<option value='seychelles' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sc">Сейшельские о-ва (SC)</option>
+															<option value='saint-barthelemy' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag bl">Сен-Бартельми (BL)</option>
+															<option value='saint-martin' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag mf">Сен-Мартен (MF)</option>
+															<option value='saint-pierre-and-miquelon' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pm">Сен-Пьер и Микелон (PM)</option>
+															<option value='senegal' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sn">Сенегал (SN)</option>
+															<option value='st-vincent-and-grenadines' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag vc">Сент-Винсент и Гренадины (VC)</option>
+															<option value='saint-kitts-and-nevis' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag kn">Сент-Китс и Невис (KN)</option>
+															<option value='saint-lucia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag lc">Сент-Люсия (LC)</option>
+															<option value='serbia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag rs">Сербия (RS)</option>
+															<option value='singapore' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sg">Сингапур (SG)</option>
+															<option value='sint-maarten' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sx">Синт-Мартен (SX)</option>
+															<option value='syria' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sy">Сирия (SY)</option>
+															<option value='slovakia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sk">Словакия (SK)</option>
+															<option value='slovenia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag si">Словения (SI)</option>
+															<option value='united-states' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag us">Соединенные Штаты (US)</option>
+															<option value='solomon-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sb">Соломоновы о-ва (SB)</option>
+															<option value='somalia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag so">Сомали (SO)</option>
+															<option value='sudan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sd">Судан (SD)</option>
+															<option value='suriname' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sr">Суринам (SR)</option>
+															<option value='sierra-leone' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sl">Сьерра-Леоне (SL)</option>
+															<option value='tajikistan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tj">Таджикистан (TJ)</option>
+															<option value='thailand' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag th">Таиланд (TH)</option>
+															<option value='taiwan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tw">Тайвань (TW)</option>
+															<option value='tanzania' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tz">Танзания (TZ)</option>
+															<option value='togo' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tg">Того (TG)</option>
+															<option value='tokelau' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tk">Токелау (TK)</option>
+															<option value='tonga' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag to">Тонга (TO)</option>
+															<option value='trinidad-and-tobago' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tt">Тринидад и Тобаго (TT)</option>
+															<option value='tuvalu' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tv">Тувалу (TV)</option>
+															<option value='tunisia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tn">Тунис (TN)</option>
+															<option value='turkmenistan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tm">Туркменистан (TM)</option>
+															<option value='turkey' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tr">Турция (TR)</option>
+															<option value='uganda' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ug">Уганда (UG)</option>
+															<option value='uzbekistan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag uz">Узбекистан (UZ)</option>
+															<option value='ukraine' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ua">Украина (UA)</option>
+															<option value='wallis-and-futuna' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag wf">Уоллис и Футуна (WF)</option>
+															<option value='uruguay' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag uy">Уругвай (UY)</option>
+															<option value='faroe-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag fo">Фарерские о-ва (FO)</option>
+															<option value='micronesia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag fm">Федеративные Штаты Микронезии (FM)</option>
+															<option value='fiji' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag fj">Фиджи (FJ)</option>
+															<option value='philippines' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ph">Филиппины (PH)</option>
+															<option value='finland' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag fi">Финляндия (FI)</option>
+															<option value='falkland-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag fk">Фолклендские о-ва (FK)</option>
+															<option value='france' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag fr">Франция (FR)</option>
+															<option value='french-guiana' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gf">Французская Гвиана (GF)</option>
+															<option value='french-polynesia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag pf">Французская Полинезия (PF)</option>
+															<option value='french-southern-territories' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag tf">Французские Южные Территории (TF)</option>
+															<option value='croatia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag hr">Хорватия (HR)</option>
+															<option value='central-african-republic' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cf">ЦАР (CF)</option>
+															<option value='chad' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag td">Чад (TD)</option>
+															<option value='montenegro' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag me">Черногория (ME)</option>
+															<option value='czech-republic' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cz">Чехия (CZ)</option>
+															<option value='chile' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag cl">Чили (CL)</option>
+															<option value='switzerland' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ch">Швейцария (CH)</option>
+															<option value='sweden' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag se">Швеция (SE)</option>
+															<option value='svalbard-and-jan-mayen' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag sj">Шпицберген и Ян-Майен (SJ)</option>
+															<option value='sri-lanka' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag lk">Шри-Ланка (LK)</option>
+															<option value='ecuador' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ec">Эквадор (EC)</option>
+															<option value='equatorial-guinea' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gq">Экваториальная Гвинея (GQ)</option>
+															<option value='eritrea' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag er">Эритрея (ER)</option>
+															<option value='estonia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ee">Эстония (EE)</option>
+															<option value='ethiopia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag et">Эфиопия (ET)</option>
+															<option value='south-africa' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag za">ЮАР (ZA)</option>
+															<option value='south-georgia-and-south-sandwich-islands' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag gs">Южная Георгия и Южные Сандвичевы о-ва (GS)</option>
+															<option value='south-ossetia' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag os">Южная Осетия (OS)</option>
+															<option value='south-sudan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag ss">Южный Судан (SS)</option>
+															<option value='jamaica' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag jm">Ямайка (JM)</option>
+															<option value='japan' data-image="/rtfiles/images/msdropdown/icons/blank.gif" data-imagecss="flag jp">Япония (JP)</option>
+													</select>
+					</div>
+					<div id="modeblock" class="input-wrapper">
+						<label class="middlelabel">Режим</label>
+						<input type="radio" class="prettyCheckableMode1" value="export" id="export1" name="mode1" data-label="Экспорт" checked data-customclass="margin-right"/>
+						<input type="radio" class="prettyCheckableMode1" value="import" id="import1" name="mode1" data-label="Импорт" />
+					</div>
+					<div id="periodblock" class="input-wrapper">
+						<label class="bottomlabel" for="year1">Период</label>
+						<select name="year1" id="year1">
+							<option value='2010'>2010</option>
+							<option value='2011'>2011</option>
+							<option value='2012'>2012</option>
+							<option value='2013'>2013</option>
+							<option value='2014'>2014</option>
+							<option value='2015'>2015</option>
+							<option value='2016'>2016</option>
+							<option value='2017'>2017</option>
+							<option value='2018'>2018</option>
+							<option value='2019'>2019</option>
+							<option selected value='2020'>2020</option>
+						</select>
+						<label></label>
+						<input type="radio" class="prettyCheckableInterval1" value="0" id="wholeyear1" name="interval1" data-label="Весь год" data-customclass="margin-right"/>
+						<input type="radio" class="prettyCheckableInterval1" value="1" id="quarter11" name="interval1" data-label="1 кв." data-customclass="margin-right"/>
+						<input type="radio" class="prettyCheckableInterval1" value="2" id="quarter21" name="interval1" data-label="2 кв." data-customclass="margin-right"/>
+						<input type="radio" class="prettyCheckableInterval1" value="3" id="quarter31" name="interval1" data-label="3 кв." data-customclass="margin-right"/>
+						<input type="radio" class="prettyCheckableInterval1" value="4" id="quarter41" name="interval1" data-label="4 кв." />
+					</div>
+					<div align="center"><input type="submit" value="Показать результаты" /></div>
+				</form>
+			</div>
+			<div id="tabs-2">
+				<form class="well" action="" method="GET">
+					<div id="productionblock" class="input-wrapper">
+						<label class="toplabel" for="production">Товарная группа</label>
+						<select name="production" id="production">
+															<option value='live-animals'>01 - Живые животные</option>
+															<option value='meat-and-edible-offal-thereof'>02 - Мясо и пищевые мясные субпродукты</option>
+															<option value='fish-and-shellfish'>03 - Рыба и ракообразные, моллюски и прочие водные беспозвоночные​</option>
+															<option value='dairy-products-eggs-honey'>04 - Молочная продукция; яйца птиц; мед натуральный; пищевые продукты животного происхождения, в другом месте не поименованные или не включенные</option>
+															<option value='other-animal-products'>05 - Продукты животного происхождения, в другом месте не поименованные или не включенные</option>
+															<option value='live-plants'>06 - Живые деревья и другие растения; луковицы, корни и прочие аналогичные части растений; срезанные цветы и декоративная зелень</option>
+															<option value='edible-vegetables-roots-tubers'>07 - Овощи и некоторые съедобные корнеплоды и клубнеплоды​</option>
+															<option value='edible-fruit-and-nuts'>08 - Съедобные фрукты и орехи; кожура цитрусовых плодов или корки дынь</option>
+															<option value='coffee-tea-spices'>09 - Кофе, чай, мате, или парагвайский чай, и пряности</option>
+															<option value='cereals'>10 - Злаки</option>
+															<option value='milling-products'>11 - Продукция мукомольно-крупяной промышленности; солод; крахмалы; инулин; пшеничная клейковина</option>
+															<option value='oil-seeds-and-oleaginous-fruits'>12 - Масличные семена и плоды; прочие семена, плоды и зерно; лекарственные растения и растения для технических целей; солома и фураж</option>
+															<option value='lac-gums-resins'>13 - Шеллак природный неочищенный; камеди, смолы и прочие растительные соки и экстракты</option>
+															<option value='vegetable-plaiting-materials'>14 - Растительные материалы для изготовления плетеных изделий; прочие продукты растительного происхождения, в другом месте не поименованные или не включенные</option>
+															<option value='animal-or-vegetable-fats-oils'>15 - Жиры и масла животного или растительного происхождения и продукты их расщепления; готовые пищевые жиры; воски животного или растительного происхождения</option>
+															<option value='preparations-of-meat-fish-shellfish'>16 - Готовые продукты из мяса, рыбы или ракообразных, моллюсков или прочих водных беспозвоночных</option>
+															<option value='sugars-and-confectionery'>17 - Сахар и кондитерские изделия из сахара</option>
+															<option value='cocoa-and-preparations-thereof'>18 - Какао и продукты из него</option>
+															<option value='cereals-flour-starch-preparations'>19 - Готовые продукты из зерна злаков, муки, крахмала или молока; мучные кондитерские изделия</option>
+															<option value='vegetables-fruit-nuts-preparations'>20 - Продукты переработки овощей, фруктов, орехов или прочих частей растений</option>
+															<option value='miscellaneous-edible-preparations'>21 - Разные пищевые продукты</option>
+															<option value='beverages-spirits-vinegar'>22 - Алкогольные и безалкогольные напитки и уксус</option>
+															<option value='prepared-animal-feed'>23 - Остатки и отходы пищевой промышленности; готовые корма для животных</option>
+															<option value='tobacco-products'>24 - Табак и промышленные заменители табака</option>
+															<option value='quarry-products'>25 - Соль; сера; земли и камень; штукатурные материалы, известь и цемент</option>
+															<option value='ores-slag-ash'>26 - Руды, шлак и зола</option>
+															<option value='mineral-fuels-oils-waxes'>27 - Топливо минеральное, нефть и продукты их перегонки; битуминозные вещества; воски минеральные</option>
+															<option value='inorganic-chemicals'>28 - Продукты неорганической химии; соединения неорганические или органические драгоценных металлов, редкоземельных металлов, радиоактивных элементов или изотопов</option>
+															<option value='organic-chemicals'>29 - Органические химические соединения</option>
+															<option value='pharmaceutical-products'>30 - Фармацевтическая продукция</option>
+															<option value='fertilizers'>31 - Удобрения</option>
+															<option value='paints-dyes-pigments-inks'>32 - Экстракты дубильные или красильные; таннины и их производные; красители, пигменты и прочие красящие вещества; краски и лаки; шпатлевки и прочие мастики; полиграфическая краска, чернила, тушь</option>
+															<option value='perfume-cosmetics'>33 - Эфирные масла и резиноиды; парфюмерные, косметические или туалетные средства</option>
+															<option value='soaps-waxes'>34 - Мыло, поверхностно-активные органические вещества, моющие средства, смазочные материалы, искусственные и готовые воски, составы для чистки или полировки, свечи и аналогичные изделия, пасты для лепки, пластилин, "зубоврачебный воск" и зубоврачебные составы на основе гипса</option>
+															<option value='albumins-glues-enzymes'>35 - Белковые вещества; модифицированные крахмалы; клеи; ферменты</option>
+															<option value='explosives-pyrotechnics-matches'>36 - Взрывчатые вещества; пиротехнические изделия; спички; пирофорные сплавы; некоторые горючие вещества</option>
+															<option value='photographic-cinematographic-goods'>37 - Фото- и кинотовары</option>
+															<option value='miscellaneous-chemical-products'>38 - Прочие химические продукты</option>
+															<option value='plastics-and-articles-thereof'>39 - Пластмассы и изделия из них​​</option>
+															<option value='rubber-and-articles-thereof'>40 - Каучук, резина и изделия из них</option>
+															<option value='raw-hides-skins-leather'>41 - Hеобработанные шкуры (кроме натурального меха) и выделанная кожа</option>
+															<option value='leather-articles'>42 - Изделия из кожи; шорно-седельные изделия и упряжь; дорожные принадлежности, дамские сумки и аналогичные им товары; изделия из кишок животных (кроме волокна из фиброина шелкопряда)</option>
+															<option value='fur-and-manufactures-thereof'>43 - Натуральный и искусственный мех; изделия из него</option>
+															<option value='wood-and-articles-thereof'>44 - Древесина и изделия из нее; древесный уголь​</option>
+															<option value='cork-and-articles-thereof'>45 - Пробка и изделия из нее</option>
+															<option value='basketware-wickerwork'>46 - Изделия из соломы, альфы или прочих материалов для плетения; корзиночные изделия и плетеные изделия</option>
+															<option value='wood-pulp-paper-waste'>47 - Масса из древесины или из других волокнистых целлюлозных материалов; регенерируемые бумага или картон (макулатура и отходы)</option>
+															<option value='paper-paperboard'>48 - Бумага и картон; изделия из бумажной массы, бумаги или картона​</option>
+															<option value='printed-books-newspapers-pictures'>49 - Печатные книги, газеты, репродукции и другие изделия полиграфической промышленности; рукописи, машинописные тексты и планы</option>
+															<option value='silk'>50 - Шелк</option>
+															<option value='wool-and-animal-hair'>51 - Шерсть, тонкий или грубый волос животных; пряжа и ткань, из конского волоса</option>
+															<option value='cotton'>52 - Хлопок</option>
+															<option value='other-vegetable-textile-fibers'>53 - Прочие растительные текстильные волокна; бумажная пряжа и ткани из бумажной пряжи</option>
+															<option value='man-made-filaments'>54 - Химические нити; плоские и аналогичные нити из химических текстильных материалов</option>
+															<option value='man-made-staple-fibers'>55 - Химические волокна</option>
+															<option value='nonwovens-and-cordage'>56 - Вата, войлок или фетр и нетканые материалы; специальная пряжа; бечевки, веревки, канаты и тросы и изделия из них</option>
+															<option value='carpets-and-other-textile-coverings'>57 - Ковры и прочие текстильные напольные покрытия</option>
+															<option value='special-woven-fabrics'>58 - Специальные ткани; тафтинговые текстильные материалы; кружева; гобелены; отделочные материалы; вышивки</option>
+															<option value='coated-textiles'>59 - Текстильные материалы, пропитанные, с покрытием или дублированные; текстильные изделия технического назначения</option>
+															<option value='knitted-or-crocheted-fabrics'>60 - Трикотажные полотна машинного или ручного вязания</option>
+															<option value='knitted-crocheted-articles-of-apparel'>61 - Предметы одежды и принадлежности к одежде, трикотажные машинного или ручного вязания​​</option>
+															<option value='apparel-not-knitted-or-crocheted'>62 - Предметы одежды и принадлежности к одежде, кроме трикотажных машинного или ручного вязания</option>
+															<option value='other-textile-articles'>63 - Прочие готовые текстильные изделия; наборы; одежда и текстильные изделия, бывшие в употреблении; тряпье</option>
+															<option value='footwear'>64 - Обувь, гетры и аналогичные изделия; их детали</option>
+															<option value='headgear-and-parts-thereof'>65 - Головные уборы и их части</option>
+															<option value='umbrellas-sticks-whips'>66 - Зонты, солнцезащитные зонты, трости, трости-сиденья, хлысты, кнуты для верховой езды и их части</option>
+															<option value='feathers-down-artificial-flowers-wigs'>67 - Обработанные перья и пух и изделия из перьев или пуха; искусственные цветы; изделия из человеческого волоса</option>
+															<option value='articles-of-stone-plaster-cement'>68 - Изделия из камня, гипса, цемента, асбеста, слюды или аналогичных материалов</option>
+															<option value='ceramic-products'>69 - Керамические изделия</option>
+															<option value='glass-and-glassware'>70 - Стекло и изделия из него​</option>
+															<option value='gems-and-jewelry'>71 - Жемчуг природный или культивированный, драгоценные или полудрагоценные камни, драгоценные металлы, металлы, плакированные драгоценными металлами, и изделия из них; бижутерия; монеты</option>
+															<option value='iron-and-steel'>72 - Черные металлы</option>
+															<option value='articles-of-iron-or-steel'>73 - Изделия из черных металлов</option>
+															<option value='copper-and-articles-thereof'>74 - Медь и изделия из нее</option>
+															<option value='nickel-and-articles-thereof'>75 - Никель и изделия из него</option>
+															<option value='aluminum-and-articles-thereof'>76 - Алюминий и изделия из него</option>
+															<option value='lead-and-articles-thereof'>78 - Свинец и изделия из него</option>
+															<option value='zinc-and-articles-thereof'>79 - Цинк и изделия из него</option>
+															<option value='tin-and-articles-thereof'>80 - Олово и изделия из него</option>
+															<option value='other-base-metals'>81 - Прочие недрагоценные металлы; металлокерамика; изделия из них</option>
+															<option value='metal-tools-and-implements'>82 - Инструменты, приспособления, ножевые изделия, ложки и вилки из недрагоценных металлов; их части из недрагоценных металлов</option>
+															<option value='miscellaneous-articles-of-base-metal'>83 - Прочие изделия из недрагоценных металлов</option>
+															<option value='large-mechanical-appliances-machines'>84 - Реакторы ядерные, котлы, оборудование и механические устройства; их части​</option>
+															<option value='electronics-and-components'>85 - Электрические машины и оборудование, их части; звукозаписывающая и звуковоспроизводящая аппаратура, аппаратура для записи и воспроизведения телевизионного изображения и звука, их части и принадлежности</option>
+															<option value='railway-equipment'>86 - Железнодорожные локомотивы или моторные вагоны трамвая, подвижной состав и их части; путевое оборудование и устройства для железных дорог или трамвайных путей и их части; механическое (включая электромеханическое) сигнальное оборудование всех видов</option>
+															<option value='vehicles'>87 - Средства наземного транспорта, кроме железнодорожного или трамвайного подвижного состава, и их части и принадлежности</option>
+															<option value='aircraft-spacecraft-and-parts-thereof'>88 - Летательные аппараты, космические аппараты, и их части​</option>
+															<option value='ships-boats-floating-structures'>89 - Суда, лодки и плавучие конструкции</option>
+															<option value='optical-medical-precision-instruments'>90 - Инструменты и аппараты оптические, фотографические, кинематографические, измерительные, контрольные, прецизионные, медицинские или хирургические; их части и принадлежности</option>
+															<option value='clocks-watches-and-parts-thereof'>91 - Часы всех видов и их части​</option>
+															<option value='musical-instruments'>92 - Инструменты музыкальные; их части и принадлежности</option>
+															<option value='arms-and-ammunition'>93 - Оружие и боеприпасы; их части и принадлежности</option>
+															<option value='furnishing'>94 - Мебель; постельные принадлежности, матрацы, основы матрацные, диванные подушки и аналогичные набивные принадлежности мебели; лампы и осветительное оборудование, в другом месте не поименованные или не включенные; световые вывески, световые таблички с именем или названием, или адресом и аналогичные изделия; сборные строительные конструкции</option>
+															<option value='toys-games-and-sports-requisites'>95 - Игрушки, игры и спортивный инвентарь; их части и принадлежности</option>
+															<option value='miscellaneous-manufactured-articles'>96 - Разные готовые изделия</option>
+															<option value='works-of-art-collectibles-antiques'>97 - Произведения искусства, предметы коллекционирования и антиквариат</option>
+															<option value='classified'>SS - Секретный код</option>
+													</select>
+					</div>
+					<div id="modeblock" class="input-wrapper">
+						<label class="middlelabel">Режим</label>
+						<input type="radio" class="prettyCheckableMode2" value="export" id="export2" name="mode2" data-label="Экспорт" checked data-customclass="margin-right"/>
+						<input type="radio" class="prettyCheckableMode2" value="import" id="import2" name="mode2" data-label="Импорт" />
+					</div>
+					<div id="periodblock" class="input-wrapper">
+						<label class="bottomlabel" for="year2">Период</label>
+						<select name="year2" id="year2">
+							<option value='2010'>2010</option>
+							<option value='2011'>2011</option>
+							<option value='2012'>2012</option>
+							<option value='2013'>2013</option>
+							<option value='2014'>2014</option>
+							<option value='2015'>2015</option>
+							<option value='2016'>2016</option>
+							<option value='2017'>2017</option>
+							<option value='2018'>2018</option>
+							<option value='2019'>2019</option>
+							<option selected value='2020'>2020</option>
+						</select>
+						<label></label>
+						<input type="radio" class="prettyCheckableInterval2" value="0" id="wholeyear2" name="interval2" data-label="Весь год" data-customclass="margin-right"/>
+						<input type="radio" class="prettyCheckableInterval2" value="1" id="quarter12" name="interval2" data-label="1 кв." data-customclass="margin-right"/>
+						<input type="radio" class="prettyCheckableInterval2" value="2" id="quarter22" name="interval2" data-label="2 кв." data-customclass="margin-right"/>
+						<input type="radio" class="prettyCheckableInterval2" value="3" id="quarter32" name="interval2" data-label="3 кв." data-customclass="margin-right"/>
+						<input type="radio" class="prettyCheckableInterval2" value="4" id="quarter42" name="interval2" data-label="4 кв." />
+					</div>
+					<div align="center"><input type="submit" value="Показать результаты" /></div>
+				</form>
+			</div>
+		</div><!--окончание tabs-->
+
+
+
+
+
+
+
+
+	
+ 
+
+
+	
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+	</div><!--окончание блока main-->
+
+</div><!--end of main-wrapper-->
+
+
+	<aside id="left">
+		<div id="cor">
+			<h2>
+				<a href="https://russian-trade.com/coronavirus/">Статистика коронавируса по странам мира</a>
+			</h2>
+		</div>
+		<div id="cor">
+			<h2>
+				<a href="https://russian-trade.com/coronavirus-russia/">Статистика коронавируса по регионам России</a>
+			</h2>
+		</div>
+		<div id="tk-eaes">
+			<h2>
+				<a href="https://russian-trade.com/docs/tk-eaes/">Таможенный кодекс Евразийского экономического союза (ТК ЕАЭС)</a>
+			</h2>
+		</div>
+		<div id="ett-eaes">
+			<h2>
+				<a href="https://russian-trade.com/docs/ett-eaes/">Единый таможенный тариф Евразийского экономического союза (ЕТТ ЕАЭС)</a>
+			</h2>
+		</div>
+
+
+
+
+		<div id="left-adv-yandex">
+
+<!-- Yandex.RTB R-A-222344-1 -->
+<div id="yandex_rtb_R-A-222344-1" class="yandex-adaptive"></div>
+<script>window.yaContextCb.push(()=>{
+  Ya.Context.AdvManager.render({
+    renderTo: 'yandex_rtb_R-A-222344-1',
+    blockId: 'R-A-222344-1'
+  })
+})</script>
+
+		</div>
+		
+		
+		
+		<div id="informer1">
+						
+			<img src="/rtfiles/mypic1.png" />
+		</div>
+		
+		
+		
+		<div id="informer3">
+						<img src="/rtfiles/mypic3.png" />
+		</div>
+	</aside><!--end of aside with id="left"-->
+
+
+	<aside id="right">
+
+		<div id="kursy-valyut">
+			<h2>
+				<a href="https://russian-trade.com/kursy-valyut/">Курсы иностранных валют к российскому рублю</a>
+			</h2>
+		</div>
+
+		<div id="exchange-rates">
+			<div id="exchange-rates-inner">Курсы валют<br/>к рублю (на дату)</div>
+		</div>
+		<div id="results"></div><div id="exchangetorub"><div id="curs-source-and-date" class="ui-state-active">Источник: Центральный банк России<br/>Дата: Сегодня</div><table id="curs" class="grid_exch"><tr><th colspan="2" class="ui-state-active">Валюта</th><th class="ui-state-active">Кол.</th><th class="ui-state-active"><img src="/rtfiles/flags/RUB.png" width="14" height="11" alt="" /> RUB</th></tr><tr><td><img src="/rtfiles/flags/AUD.png" alt="" /><br/>AUD</td><td>Доллар Австралии</td><td>1</td><td>57.0614</td></tr><tr><td><img src="/rtfiles/flags/AZN.png" alt="" /><br/>AZN</td><td>Манат Азербайджана</td><td>1</td><td>44.8557</td></tr><tr><td><img src="/rtfiles/flags/GBP.png" alt="" /><br/>GBP</td><td>Британский фунт</td><td>1</td><td>99.8479</td></tr><tr><td><img src="/rtfiles/flags/AMD.png" alt="" /><br/>AMD</td><td>Армянский драм</td><td>100</td><td>15.9890</td></tr><tr><td><img src="/rtfiles/flags/BYN.png" alt="" /><br/>BYN</td><td>Белорусский рубль</td><td>1</td><td>27.1273</td></tr><tr><td><img src="/rtfiles/flags/BGN.png" alt="" /><br/>BGN</td><td>Болгарский лев</td><td>1</td><td>42.5861</td></tr><tr><td><img src="/rtfiles/flags/BRL.png" alt="" /><br/>BRL</td><td>Бразильский реал</td><td>1</td><td>16.2368</td></tr><tr><td><img src="/rtfiles/flags/HUF.png" alt="" /><br/>HUF</td><td>Венгерский форинт</td><td>100</td><td>21.7244</td></tr><tr><td><img src="/rtfiles/flags/HKD.png" alt="" /><br/>HKD</td><td>Гонконгский доллар</td><td>10</td><td>97.4626</td></tr><tr><td><img src="/rtfiles/flags/DKK.png" alt="" /><br/>DKK</td><td>Датская крона</td><td>1</td><td>11.1986</td></tr><tr><td><img src="/rtfiles/flags/USD.png" alt="" /><br/>USD</td><td>Доллар США</td><td>1</td><td>76.2547</td></tr><tr><td><img src="/rtfiles/flags/EUR.png" alt="" /><br/>EUR</td><td>Евро</td><td>1</td><td>83.2930</td></tr><tr><td><img src="/rtfiles/flags/INR.png" alt="" /><br/>INR</td><td>Индийская рупия</td><td>10</td><td>10.0590</td></tr><tr><td><img src="/rtfiles/flags/KZT.png" alt="" /><br/>KZT</td><td>Казахстанский тенге</td><td>100</td><td>16.4975</td></tr><tr><td><img src="/rtfiles/flags/CAD.png" alt="" /><br/>CAD</td><td>Канадский доллар</td><td>1</td><td>60.9599</td></tr><tr><td><img src="/rtfiles/flags/KGS.png" alt="" /><br/>KGS</td><td>Киргизский сом</td><td>100</td><td>83.8373</td></tr><tr><td><img src="/rtfiles/flags/CNY.png" alt="" /><br/>CNY</td><td>Китайский юань</td><td>1</td><td>11.9862</td></tr><tr><td><img src="/rtfiles/flags/MDL.png" alt="" /><br/>MDL</td><td>Молдавский лей</td><td>10</td><td>41.5432</td></tr><tr><td><img src="/rtfiles/flags/NOK.png" alt="" /><br/>NOK</td><td>Норвежская крона</td><td>10</td><td>87.1971</td></tr><tr><td><img src="/rtfiles/flags/PLN.png" alt="" /><br/>PLN</td><td>Польский злотый</td><td>1</td><td>17.9922</td></tr><tr><td><img src="/rtfiles/flags/RON.png" alt="" /><br/>RON</td><td>Новый румынский лей</td><td>1</td><td>16.8043</td></tr><tr><td><img src="/rtfiles/flags/XDR.png" alt="" /><br/>XDR</td><td>СДР</td><td>1</td><td>104.6291</td></tr><tr><td><img src="/rtfiles/flags/SGD.png" alt="" /><br/>SGD</td><td>Сингапурский доллар</td><td>1</td><td>56.0614</td></tr><tr><td><img src="/rtfiles/flags/TJS.png" alt="" /><br/>TJS</td><td>Таджикский сомони</td><td>10</td><td>61.0038</td></tr><tr><td><img src="/rtfiles/flags/TRY.png" alt="" /><br/>TRY</td><td>Турецкая лира</td><td>10</td><td>51.7255</td></tr><tr><td><img src="/rtfiles/flags/TMT.png" alt="" /><br/>TMT</td><td>Новый туркменский манат</td><td>1</td><td>21.7871</td></tr><tr><td><img src="/rtfiles/flags/UZS.png" alt="" /><br/>UZS</td><td>Узбекский сум</td><td>10000</td><td>67.0633</td></tr><tr><td><img src="/rtfiles/flags/UAH.png" alt="" /><br/>UAH</td><td>Украинская гривна</td><td>10</td><td>25.9370</td></tr><tr><td><img src="/rtfiles/flags/CZK.png" alt="" /><br/>CZK</td><td>Чешская крона</td><td>10</td><td>33.9559</td></tr><tr><td><img src="/rtfiles/flags/SEK.png" alt="" /><br/>SEK</td><td>Шведская крона</td><td>10</td><td>80.5488</td></tr><tr><td><img src="/rtfiles/flags/CHF.png" alt="" /><br/>CHF</td><td>Швейцарский франк</td><td>1</td><td>81.7219</td></tr><tr><td><img src="/rtfiles/flags/ZAR.png" alt="" /><br/>ZAR</td><td>Рэнд ЮАР</td><td>10</td><td>51.8031</td></tr><tr><td><img src="/rtfiles/flags/KRW.png" alt="" /><br/>KRW</td><td>Вона Южной Кореи</td><td>1000</td><td>62.5295</td></tr><tr><td><img src="/rtfiles/flags/JPY.png" alt="" /><br/>JPY</td><td>Японская иена</td><td>100</td><td>61.6748</td></tr></table></div>
+		<div id="curs-other-dates">
+			<div id="curs-other-dates-inscr">Курсы валют на другие даты:</div>
+			<div id="curdatepicker"></div>
+		</div>
+
+
+
+	</aside> <!--end of aside with id="right"-->
+
+
+	<footer id="footer">
+		<div id="copyright">Авторские права &copy; 2014-2022 russian-trade.com "Внешняя Торговля России"</div>
+		<div id="usage">При любом использовании материалов сайта, гиперссылка на russian-trade.com обязательна.</div>
+		<div id="design">Дизайн: <a href="https://russian-trade.com/">russian-trade.com</a></div>
+		<div id="contacts">Контакты: <a href="mailto:admin@russian-trade.com?subject=От посетилеля сайта Внешняя торговля России">admin@russian-trade.com</a></div>
+		<div id="counters">
+<!-- Rating@Mail.ru logo -->
+<a href="https://top.mail.ru/jump?from=2569084">
+<img src="//top-fwz1.mail.ru/counter?id=2569084;t=318;l=1" 
+style="border:0;" height="15" width="88" alt="Рейтинг@Mail.ru" /></a>
+<!-- //Rating@Mail.ru logo -->
+
+<!--LiveInternet counter--><script type="text/javascript"><!--
+document.write("<a href='//www.liveinternet.ru/click' "+
+"target=_blank><img src='//counter.yadro.ru/hit?t24.6;r"+
+escape(document.referrer)+((typeof(screen)=="undefined")?"":
+";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+";"+Math.random()+
+"' alt='' title='LiveInternet: показано число посетителей за"+
+" сегодня' "+
+"border='0' width='88' height='15'><\/a>")
+</script><!--/LiveInternet-->
+		</div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-55065662-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+	</footer>
+
+</div><!--end of id="wrapper-->
+
+
+</body>
+
+</html>
