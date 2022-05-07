@@ -1,8 +1,7 @@
 from RussianTradeParser import RussianTradeParser
 import matplotlib.pyplot as plt
 from FigureMaker import FigureMaker
-from fpdf import FPDF
-from PDFCreator import PDF
+from ReportPDF import PDF
 
 
 class Organizator():
@@ -57,6 +56,14 @@ class Organizator():
         labels = self.get_shot_labels(labels_current)
         # Barchart for import
         FigureMaker.make_double_bar_chart(values_prev, values_cur, labels, export=False)
+        pdf = PDF()
+
+        pdf.make_report("Общая информация", "ExportRussiaPie.png",
+                        "ExportRussiaBar.png",
+                        "ImportRussiaPie.png",
+                        "ImportRussiaBar.png",
+                        overal_info)
+        pdf.output('tuto.pdf')
 
 
     @staticmethod
