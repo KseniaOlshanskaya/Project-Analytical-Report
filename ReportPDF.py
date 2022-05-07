@@ -46,11 +46,7 @@ class PDF(FPDF):
         # Line break
         self.ln(4)
 
-    def make_report(self, title, figureExportRussiaPie,
-                    figureExportRussiaBar,
-                    figureImportRussiaPie,
-                    figureImportRussiaBar,
-                    overal_info_text):
+    def print_overal_info(self, title, overal_info_text):
         self.add_font('DejaVu', '', 'DejaVuSansCondensed.ttf', uni=True)
         self.set_font('DejaVu', '', 10)
         self.add_page()
@@ -58,5 +54,13 @@ class PDF(FPDF):
         for text in overal_info_text:
             self.multi_cell(0, 5, text)
             self.ln()
-        self.image(figureExportRussiaPie, x=0, y=200, w=WIDTH/3, type='PNG')
-        self.image(figureImportRussiaPie, x= WIDTH/3 + 10, y=200, w=WIDTH / 3, type='PNG')
+
+    def print_export_info_russia(self, title, figureExportRussiaPie, figureExportRussiaBar):
+        self.add_font('DejaVu', '', 'DejaVuSansCondensed.ttf', uni=True)
+        self.set_font('DejaVu', '', 10)
+        self.add_page()
+        self.chapter_title(title)
+        self.image(figureExportRussiaPie, x=10, y=35, w=WIDTH / 2.5, type='PNG')
+        self.image(figureExportRussiaBar, x=WIDTH / 2.5 + 40, y=35, w=WIDTH / 2.5, type='PNG')
+
+

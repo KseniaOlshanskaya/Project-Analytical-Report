@@ -19,12 +19,12 @@ class Organizator():
 
         # Таблица по экспорту
         df_export = self.parser.get_product_data_frame(all_tables[0])
-
         products_export_current = self.get_grouped_current(df_export)
         values_current, labels_current, description_current = \
-            self.get_data_grouped_by_sector(products_export_current) # Export Data for piechart (2021)
+            self.get_data_grouped_by_sector(products_export_current)  # Export Data for piechart (2021)
 
         # Piechart for export
+        description = "Структура экспорта России по отраслям за 2021 год. с страной: " + "Казахстан"
         FigureMaker().make_pie_chart(values_current, labels_current, description_current)
 
         # Barchart for export
@@ -41,9 +41,10 @@ class Organizator():
         # Таблица по импорту
         df_import = self.parser.get_product_data_frame(all_tables[1], export=False)
         products_import_current = self.get_grouped_current(df_import, export=False)
-        values, labels, description =self.get_data_grouped_by_sector(products_import_current, export=False) # Import Data for piechart (2021)
-
+        values, labels, description = self.get_data_grouped_by_sector(products_import_current,
+                                                                      export=False)  # Import Data for piechart (2021)
         # Piechart for import
+        description = "Структура импорта России по отраслям за 2021 год. с страной: " + "Казахстан"
         FigureMaker().make_pie_chart(values, labels, description, export=False)
 
         products_import_previous = self.get_grouped_previous(df_import, export=False)
@@ -57,14 +58,9 @@ class Organizator():
         # Barchart for import
         FigureMaker.make_double_bar_chart(values_prev, values_cur, labels, export=False)
         pdf = PDF()
-
-        pdf.make_report("Общая информация", "ExportRussiaPie.png",
-                        "ExportRussiaBar.png",
-                        "ImportRussiaPie.png",
-                        "ImportRussiaBar.png",
-                        overal_info)
+        pdf.print_overal_info("Общая информация", overal_info)
+        pdf.print_export_info_russia("Экспорт России в Казахстан", "ExportRussiaPie.png", "ExportRussiaBar.png")
         pdf.output('tuto.pdf')
-
 
     @staticmethod
     def get_grouped_current(df, export=True):

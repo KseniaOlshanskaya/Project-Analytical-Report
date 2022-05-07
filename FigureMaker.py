@@ -6,7 +6,7 @@ class FigureMaker(object):
 
     @staticmethod
     def make_pie_chart(values, labels, description, export=True):
-        plt.pie(values)
+        plt.pie(values, figsize=(1,1))
         plt.legend(labels, loc="best", bbox_to_anchor=(1, 1))
         plt.title(description)
         if export:
