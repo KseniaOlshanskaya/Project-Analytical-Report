@@ -4,6 +4,7 @@ from FigureMaker import FigureMaker
 from fpdf import FPDF
 from PDFCreator import PDF
 
+
 class Organizator():
     def __init__(self):
         self.parser = RussianTradeParser()
@@ -19,23 +20,43 @@ class Organizator():
 
         # Таблица по экспорту
         df_export = self.parser.get_product_data_frame(all_tables[0])
-        products = self.get_grouped_current(df_export)
-        values, labels, description = self.get_data_for_piechart(products) # Export Data for piechart (2021)
+
+        products_export_current = self.get_grouped_current(df_export)
+        values_current, labels_current, description_current = \
+            self.get_data_grouped_by_sector(products_export_current) # Export Data for piechart (2021)
 
         # Piechart for export
-        FigureMaker().makePieChart(values, labels, description)
+        FigureMaker().make_pie_chart(values_current, labels_current, description_current)
 
         # Barchart for export
-
+        products_export_previous = self.get_grouped_previous(df_export)
+        products_export_current = self.get_grouped_current(df_export)
+        values_current = products_export_current.values()
+        labels_current = products_export_current.keys()
+        values_previous = products_export_previous.values()
+        values_prev = [val / 1000000 for val in values_previous]
+        values_cur = [val / 1000000 for val in values_current]
+        labels = self.get_shot_labels(labels_current)
+        FigureMaker.make_double_bar_chart(values_prev, values_cur, labels)
 
         # Таблица по импорту
         df_import = self.parser.get_product_data_frame(all_tables[1], export=False)
-        products = self.get_grouped_current(df_import, export=False)
-        values, labels, description =self.get_data_for_piechart(products) # Import Data for piechart (2021)
+        products_import_current = self.get_grouped_current(df_import, export=False)
+        values, labels, description =self.get_data_grouped_by_sector(products_import_current, export=False) # Import Data for piechart (2021)
 
         # Piechart for import
-        FigureMaker().makePieChart(values, labels, description, export=False)
+        FigureMaker().make_pie_chart(values, labels, description, export=False)
 
+        products_import_previous = self.get_grouped_previous(df_import, export=False)
+        products_import_current = self.get_grouped_current(df_import, export=False)
+        values_current = products_import_current.values()
+        values_cur = [val / 1000000 for val in values_current]
+        labels_current = products_import_current.keys()
+        values_previous = products_import_previous.values()
+        values_prev = [val / 1000000 for val in values_previous]
+        labels = self.get_shot_labels(labels_current)
+        # Barchart for import
+        FigureMaker.make_double_bar_chart(values_prev, values_cur, labels, export=False)
 
 
     @staticmethod
@@ -55,7 +76,7 @@ class Organizator():
         return products
 
     @staticmethod
-    def get_data_for_piechart(products):
+    def get_data_grouped_by_sector(products, export=True):
         all_values_summ = sum(products.values())
         keys = [key for key in products if
                 products.get(key) / all_values_summ < 0.03 and key != "Прочее"]
@@ -72,10 +93,36 @@ class Organizator():
             description = "Структура импорта России по отраслям за 2021 год. с страной: " + "Казахстан"
         return values, labels, description
 
+    @staticmethod
+    def get_shot_labels(labels):
+        shot_labels = []
+        for label in labels:
+            if label == "Продовольственные товары":
+                shot_labels.append("Продовольствие")
+            if label == "Сельхозтовары":
+                shot_labels.append("Сельхозтовары")
+            if label == "Машины, оборудование и ТС":
+                shot_labels.append("Машины")
+            if label == "Древесина и целлюлозно-бумажные изделия":
+                shot_labels.append("Древесина")
+            if label == "Продукция химической промышленности":
+                shot_labels.append("Химия")
+            if label == "Топливно-энергетические товары":
+                shot_labels.append("Энергоносители")
+            if label == "Металлы и изделия из них":
+                shot_labels.append("Металлы")
+            if label == "Кожевенное сырье, пушнина и изделия из них":
+                shot_labels.append("Кожа")
+            if label == "Текстиль, текстильные изделия и обувь":
+                shot_labels.append("Текстиль")
+            if label == "Драгоценные камни, драгоценные металлы и изделия из них":
+                shot_labels.append("Драг.камни")
+            if label == "Прочее":
+                shot_labels.append("Прочее")
+        return shot_labels
 
 
 
-WIDTH = 210
 
 
 
