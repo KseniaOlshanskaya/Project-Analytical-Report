@@ -2,6 +2,7 @@ from RussianTradeParser import RussianTradeParser
 import matplotlib.pyplot as plt
 from FigureMaker import FigureMaker
 from ReportPDF import PDF
+from CustomParser import CustomsParser
 
 
 class Organizator():
@@ -9,6 +10,7 @@ class Organizator():
         self.parser = RussianTradeParser()
 
     def get_report(self):
+        '''
         soup = self.parser.get_soup_by_country("Казахстан") #Возвращает соуп страничку репорта (экспорт + импорт)
 
         # Нам нужна общая информация
@@ -61,6 +63,10 @@ class Organizator():
         pdf.print_overal_info("Общая информация", overal_info)
         pdf.print_export_info_russia("Экспорт России в Казахстан", "ExportRussiaPie.png", "ExportRussiaBar.png")
         pdf.output('tuto.pdf')
+        '''
+        customs = CustomsParser()
+
+
 
     @staticmethod
     def get_grouped_current(df, export=True):
