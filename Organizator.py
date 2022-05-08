@@ -64,7 +64,10 @@ class Organizator():
         pdf.print_export_info_russia("Экспорт России в Казахстан", "ExportRussiaPie.png", "ExportRussiaBar.png")
         pdf.output('tuto.pdf')
         '''
+        region = "НОВОСИБИРСКАЯ ОБЛАСТЬ"
+        district = self.define_district(region)
         customs = CustomsParser()
+        df = customs.get_regions_overal()
 
 
 
@@ -129,6 +132,10 @@ class Organizator():
             if label == "Прочее":
                 shot_labels.append("Прочее")
         return shot_labels
+
+    @staticmethod
+    def define_district(region):
+        pass
 
 
 
