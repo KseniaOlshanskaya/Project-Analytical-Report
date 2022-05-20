@@ -1,3 +1,5 @@
+import pandas as pd
+
 from RussianTradeParser import RussianTradeParser
 import matplotlib.pyplot as plt
 from FigureMaker import FigureMaker
@@ -65,9 +67,12 @@ class Organizator():
         pdf.output('tuto.pdf')
         '''
         region = "НОВОСИБИРСКАЯ ОБЛАСТЬ"
-        district = self.define_district(region)
+        country = "КАЗАХСТАН"
         customs = CustomsParser()
-        df = customs.get_regions_overal()
+        docs_links = customs.get_docs_links("Иркутская область", 2021, "Казахстан")
+        print(docs_links)
+
+        
 
 
 
@@ -106,6 +111,14 @@ class Organizator():
         return values, labels, description
 
     @staticmethod
+    def define_district(region):
+        pass
+
+    @staticmethod
+    def get_district_data(district, df_country):
+        pass
+
+    @staticmethod
     def get_shot_labels(labels):
         shot_labels = []
         for label in labels:
@@ -133,9 +146,7 @@ class Organizator():
                 shot_labels.append("Прочее")
         return shot_labels
 
-    @staticmethod
-    def define_district(region):
-        pass
+
 
 
 
