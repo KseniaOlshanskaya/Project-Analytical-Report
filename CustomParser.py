@@ -42,8 +42,57 @@ class CustomsParser():
         doc_links = self.get_docs(soup)
         return doc_links
 
+    def get_doc_by_form(self, docs_links, name, form):
+        url = ""
+        form = str(form)
+        for doc in docs_links:
+            if form in doc:
+                url = doc
+                break
+        responce = requests.get(url, headers=self.header)
+        output = open(name, 'wb')
+        output.write(responce.content)
+        output.close()
 
+    def get_df_doc4(self, name, year):
+        df = pd.read_excel(name)
+        year_previous = str(year - 1)
+        year_current = str(year)
+        df = df.dropna()
+        pd.set_option('display.max_columns', None)
+        df = df.drop(labels=["Unnamed: 1", "Unnamed: 3", "Unnamed: 5"], axis=1)
+        df = df.rename(columns={df.columns[0]: 'Показатель',
+                                df.columns[1]: year_previous,
+                                df.columns[2]: year_current,
+                                df.columns[3]: "Темп роста"
+                                })
+        return df
 
+    def get_df_doc6(self, name):
+        df = pd.read_excel(name)
+        df = df.dropna()
+        pd.set_option('display.max_columns', None)
+        df = df.drop(labels=["Unnamed: 1", "Unnamed: 3"], axis=1)
+        df = df.rename(columns={df.columns[0]: 'Страна/Товар',
+                                df.columns[1]: 'Экспорт',
+                                df.columns[2]: 'Импорт'
+                                })
+        return df
+
+    def get_df_doc8(self, name):
+        df = pd.read_excel(name)
+        df = df.dropna()
+        pd.set_option('display.max_columns', None)
+        df = df.drop(labels=["Unnamed: 2", "Unnamed: 4", "Unnamed: 6", "Unnamed: 7",
+                             "Unnamed: 8", "Unnamed: 9",
+                             "Unnamed: 10", "Unnamed: 11",
+                             "Unnamed: 12", "Unnamed: 13"], axis=1)
+        df = df.rename(columns={df.columns[0]: 'Товарная группа',
+                                df.columns[1]: 'Наименование',
+                                df.columns[2]: 'Экспорт',
+                                df.columns[3]: 'Импорт'
+                                })
+        return df
 
     def get_soup(self, url):
         response = requests.get(url, headers=self.header)
@@ -58,10 +107,10 @@ class CustomsParser():
         soup = BeautifulSoup(src, "lxml")
         return soup
 
-        # responce = requests.get(url, headers=self.header)
-        #output = open('RegionsOveral.xlsx', 'wb')
-        #output.write(responce.content)
-        #output.close()
+        responce = requests.get(url, headers=self.header)
+        output = open('RegionsOveral.xlsx', 'wb')
+        output.write(responce.content)
+        output.close()
         df = self.get_regions_overal_from_excel()
         return df
 

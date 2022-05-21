@@ -66,11 +66,23 @@ class Organizator():
         pdf.print_export_info_russia("Экспорт России в Казахстан", "ExportRussiaPie.png", "ExportRussiaBar.png")
         pdf.output('tuto.pdf')
         '''
-        region = "НОВОСИБИРСКАЯ ОБЛАСТЬ"
-        country = "КАЗАХСТАН"
         customs = CustomsParser()
-        docs_links = customs.get_docs_links("Иркутская область", 2021, "Казахстан")
-        print(docs_links)
+        docs_links = customs.get_docs_links("Новосибирская область", 2020, "Казахстан")
+        name = "RegionFrom_4.xlsx"
+        form = 4
+        customs.get_doc_by_form(docs_links, name, form)
+        customs.get_df_doc4(name, 2020)
+
+        name = "RegionFrom_6.xlsx"
+        form = 6
+        customs.get_doc_by_form(docs_links, name, form)
+        customs.get_df_doc6(name)
+
+        name = "RegionFrom_8.xlsx"
+        form = 8
+        customs.get_doc_by_form(docs_links, name, form)
+        customs.get_df_doc8(name)
+
 
         
 
