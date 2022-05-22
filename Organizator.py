@@ -3,8 +3,11 @@ import pandas as pd
 from RussianTradeParser import RussianTradeParser
 import matplotlib.pyplot as plt
 from FigureMaker import FigureMaker
-from ReportPDF import PDF
 from CustomParser import CustomsParser
+import itertools
+from docxtpl import DocxTemplate, InlineImage
+from docx.shared import Mm
+import itertools
 
 
 class Organizator():
@@ -12,7 +15,6 @@ class Organizator():
         self.parser = RussianTradeParser()
 
     def get_report(self):
-        '''
         soup = self.parser.get_soup_by_country("Казахстан") #Возвращает соуп страничку репорта (экспорт + импорт)
 
         # Нам нужна общая информация
@@ -22,7 +24,31 @@ class Organizator():
         all_tables = self.parser.get_tables(soup)
 
         # Таблица по экспорту
+        pd.set_option('display.max_columns', None)
         df_export = self.parser.get_product_data_frame(all_tables[0])
+        df_import = self.parser.get_product_data_frame(all_tables[1], export=False)
+
+        # Формируем первую таблицу с общими показателями для России
+        summ_export_russia_current = sum(df_export["ExportCurrentYear"].to_list())/1000
+        summ_import_russia_current = sum(df_import["ImportCurrentYear"].to_list())/1000
+        oborot_russia_current =  summ_export_russia_current + summ_import_russia_current
+        saldo_russia_current = summ_export_russia_current - summ_import_russia_current
+
+        summ_export_russia_previous = sum(df_export["ExportPreviousYear"].to_list()) / 1000
+        summ_import_russia_previous = sum(df_import["ImportPreviousYear"].to_list()) / 1000
+        oborot_russia_previous = summ_export_russia_current + summ_import_russia_current
+        saldo_russia_previous = summ_export_russia_current - summ_import_russia_current
+        df_summary_russia = pd.DataFrame({"Показатель": "Экспорт",
+                                          "2021 г., тыс.дол.": summ_export_russia_current,
+                                          "2020 г., тыс.дол.": summ_export_russia_previous}, index=[0])
+        df_summary_russia = df_summary_russia.append({"Показатель": "Импорт",
+                                            "2021 г., тыс.дол.": summ_import_russia_current,
+                                            "2020 г., тыс.дол.": summ_import_russia_previous}, ignore_index=True)
+        df_summary_russia = df_summary_russia.append({"Показатель": "Оборот",
+                                                      "2021 г., тыс.дол.": oborot_russia_current,
+                                                      "2020 г., тыс.дол.": oborot_russia_previous}, ignore_index=True)
+
+
         products_export_current = self.get_grouped_current(df_export)
         values_current, labels_current, description_current = \
             self.get_data_grouped_by_sector(products_export_current)  # Export Data for piechart (2021)
@@ -43,7 +69,7 @@ class Organizator():
         FigureMaker.make_double_bar_chart(values_prev, values_cur, labels)
 
         # Таблица по импорту
-        df_import = self.parser.get_product_data_frame(all_tables[1], export=False)
+
         products_import_current = self.get_grouped_current(df_import, export=False)
         values, labels, description = self.get_data_grouped_by_sector(products_import_current,
                                                                       export=False)  # Import Data for piechart (2021)
@@ -61,21 +87,18 @@ class Organizator():
         labels = self.get_shot_labels(labels_current)
         # Barchart for import
         FigureMaker.make_double_bar_chart(values_prev, values_cur, labels, export=False)
-        pdf = PDF()
-        pdf.print_overal_info("Общая информация", overal_info)
-        pdf.print_export_info_russia("Экспорт России в Казахстан", "ExportRussiaPie.png", "ExportRussiaBar.png")
-        pdf.output('tuto.pdf')
-        '''
+
         customs = CustomsParser()
-        docs_links = customs.get_docs_links("Новосибирская область", 2020, "Казахстан")
+        docs_links = customs.get_docs_links("Новосибирская область", 2021, "Казахстан")
+
         name = "RegionFrom_4.xlsx"
         form = 4
         customs.get_doc_by_form(docs_links, name, form)
-        customs.get_df_doc4(name, 2020)
+        customs.get_df_doc4(name, 2021)
 
-        name = "RegionFrom_6.xlsx"
+        name = "RegionForm6.xlsx"
         form = 6
-        customs.get_doc_by_form(docs_links, name, form)
+        #customs.get_doc_by_form(docs_links, name, form)
         customs.get_df_doc6(name)
 
         name = "RegionFrom_8.xlsx"
@@ -83,9 +106,19 @@ class Organizator():
         customs.get_doc_by_form(docs_links, name, form)
         customs.get_df_doc8(name)
 
-
-        
-
+        context = {}
+        doc = DocxTemplate("Template.docx")
+        with open("Kazakhstan.txt", "r", encoding="UTF-8") as file:
+            text = file.readline()
+        context['country'] = 'Казахстан'
+        context['region'] = 'Новосибирская область'
+        context['year'] = '2021'
+        context['Текст'] = text
+        imagen = InlineImage(doc, 'ExportRussiaPie.png', width=Mm(150))  # width is in millimetres
+        context['image'] = imagen
+        doc.render(context)
+        # сохраняем и смотрим, что получилось
+        doc.save("generated_doc.docx")
 
 
     @staticmethod
