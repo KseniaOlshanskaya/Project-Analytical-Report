@@ -102,13 +102,8 @@ class CustomsParser():
     def get_siberian_district_soup(self):
         url = "https://stu.customs.gov.ru/document/text/330148"
         response = requests.get(url, headers=self.header)
-        src = response.text
-        soup = BeautifulSoup(src, "lxml")
-        return soup
-
-        responce = requests.get(url, headers=self.header)
         output = open('RegionsOveral.xlsx', 'wb')
-        output.write(responce.content)
+        output.write(response.content)
         output.close()
         df = self.get_regions_overal_from_excel()
         return df

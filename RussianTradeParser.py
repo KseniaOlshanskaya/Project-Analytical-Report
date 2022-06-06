@@ -1,8 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-from time import sleep
-from datetime import date
 
 
 class RussianTradeParser(object):
@@ -14,6 +12,7 @@ class RussianTradeParser(object):
     "sec-fetch-site": "cross-site", "accept-encoding": "gzip, deflate, br"}
         self.initial_soup = self.get_soup(self.url)
         self.dict_of_countries = self.get_list_of_countries()
+        self.countries_links = self.get_countries_links()
 
     def get_soup(self, url):
         response = requests.get(url, headers=self.header)
@@ -27,6 +26,13 @@ class RussianTradeParser(object):
         for item in all_countries:
             dict_of_countries[item.text[:-4].strip()] = item.get("value")
         return dict_of_countries
+
+    def get_countries_links(self):
+        countries_links = {}
+        for country_name in self.dict_of_countries:
+            url_country = "https://russian-trade.com/countries/" + self.dict_of_countries[country_name]
+            countries_links.update({country_name: url_country})
+        return countries_links
 
     def get_soup_by_country(self, country): # Соуп по стране конкретный репорт (2021)
         url_country = "https://russian-trade.com/countries/" + self.dict_of_countries[country]

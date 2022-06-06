@@ -1,32 +1,32 @@
 import pandas as pd
-
 from RussianTradeParser import RussianTradeParser
-import matplotlib.pyplot as plt
 from FigureMaker import FigureMaker
 from CustomParser import CustomsParser
-import itertools
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
-import itertools
+from Interface import Interface
 
 
-class Organizator():
-    def __init__(self):
-        self.parser = RussianTradeParser()
+class Organizer:
 
     def get_report(self):
-        soup = self.parser.get_soup_by_country("Казахстан") #Возвращает соуп страничку репорта (экспорт + импорт)
+        parser1 = RussianTradeParser()
+        parser2 = CustomsParser()
+        interface = Interface(parser1, parser2)
+
+        soup = parser1.get_soup_by_country("Казахстан") #Возвращает соуп страничку репорта (экспорт + импорт)
 
         # Нам нужна общая информация
-        overal_info = self.parser.get_overal_information(soup)
+        overal_info = parser1.get_overal_information(soup)
 
         # Достаю все таблицы (экспорт + импорт)
-        all_tables = self.parser.get_tables(soup)
+        all_tables = parser1.get_tables(soup)
 
         # Таблица по экспорту
         pd.set_option('display.max_columns', None)
-        df_export = self.parser.get_product_data_frame(all_tables[0])
-        df_import = self.parser.get_product_data_frame(all_tables[1], export=False)
+        df_export = parser1.get_product_data_frame(all_tables[0])
+        print(df_export)
+        df_import = parser1.get_product_data_frame(all_tables[1], export=False)
 
         # Формируем первую таблицу с общими показателями для России
         summ_export_russia_current = sum(df_export["ExportCurrentYear"].to_list())/1000
@@ -48,7 +48,7 @@ class Organizator():
                                                       "2021 г., тыс.дол.": oborot_russia_current,
                                                       "2020 г., тыс.дол.": oborot_russia_previous}, ignore_index=True)
 
-
+        print(df_summary_russia)
         products_export_current = self.get_grouped_current(df_export)
         values_current, labels_current, description_current = \
             self.get_data_grouped_by_sector(products_export_current)  # Export Data for piechart (2021)
@@ -66,6 +66,15 @@ class Organizator():
         values_prev = [val / 1000000 for val in values_previous]
         values_cur = [val / 1000000 for val in values_current]
         labels = self.get_shot_labels(labels_current)
+        values_prev.pop(2)
+        values_cur.pop(2)
+        labels.pop(2)
+        values_prev.pop(7)
+        values_cur.pop(7)
+        labels.pop(7)
+        values_prev.pop(0)
+        values_cur.pop(0)
+        labels.pop(0)
         FigureMaker.make_double_bar_chart(values_prev, values_cur, labels)
 
         # Таблица по импорту
@@ -85,26 +94,61 @@ class Organizator():
         values_previous = products_import_previous.values()
         values_prev = [val / 1000000 for val in values_previous]
         labels = self.get_shot_labels(labels_current)
+        values_prev.pop(0)
+        values_cur.pop(0)
+        labels.pop(0)
+        values_prev.pop(0)
+        values_cur.pop(0)
+        labels.pop(0)
+        values_prev.pop(0)
+        values_cur.pop(0)
+        labels.pop(0)
+        values_prev.pop(4)
+        values_cur.pop(4)
+        labels.pop(4)
+        values_prev.pop(4)
+        values_cur.pop(4)
+        labels.pop(4)
         # Barchart for import
         FigureMaker.make_double_bar_chart(values_prev, values_cur, labels, export=False)
 
-        customs = CustomsParser()
-        docs_links = customs.get_docs_links("Новосибирская область", 2021, "Казахстан")
+
+
+        docs_links = parser2.get_docs_links("Новосибирская область", 2021, "Казахстан")
 
         name = "RegionFrom_4.xlsx"
         form = 4
-        customs.get_doc_by_form(docs_links, name, form)
-        customs.get_df_doc4(name, 2021)
+        parser2.get_doc_by_form(docs_links, name, form)
+        form4 = parser2.get_df_doc4(name, 2021)
 
         name = "RegionForm6.xlsx"
         form = 6
         #customs.get_doc_by_form(docs_links, name, form)
-        customs.get_df_doc6(name)
+        df_form6 = parser2.get_df_doc6(name)
+
+        df_all = df_form6[df_form6["Страна/Товар" ]== "ВСЕГО"]
+        df_country6 = df_form6[df_form6["Страна/Товар" ]== "КАЗАХСТАН"]
+        df_form6 = df_form6.drop(labels=[0, 1, 2], axis=0)
+        groups = []
+        for row in df_form6.itertuples():
+            group = self.get_group(int(row[1]))
+            groups.append(group)
+        df_form6["Group"] = groups
+        export_current = self.get_grouped_current(df_form6)
+        import_current = self.get_grouped_current(df_form6, export=False)
+        values, labels, description = self.get_data_grouped_by_sector(export_current)
+        description = "Структура экспорта НСО по отраслям за 2021 год. с страной: " + "Казахстан"
+        FigureMaker().make_pie_chart(values, labels, description)
+
+        values, labels, description = self.get_data_grouped_by_sector(import_current)
+        description = "Структура импорта НСО по отраслям за 2021 год. с страной: " + "Казахстан"
+        FigureMaker().make_pie_chart(values, labels, description, export=False)
+
 
         name = "RegionFrom_8.xlsx"
         form = 8
-        customs.get_doc_by_form(docs_links, name, form)
-        customs.get_df_doc8(name)
+        parser2.get_doc_by_form(docs_links, name, form)
+        form8 = parser2.get_df_doc8(name)
 
         context = {}
         doc = DocxTemplate("Template.docx")
@@ -118,7 +162,7 @@ class Organizator():
         context['image'] = imagen
         doc.render(context)
         # сохраняем и смотрим, что получилось
-        doc.save("generated_doc.docx")
+        doc.save("generated_docu.docx")
 
 
     @staticmethod
@@ -191,7 +235,29 @@ class Organizator():
                 shot_labels.append("Прочее")
         return shot_labels
 
-
+    def get_group(self, id):
+        if id in [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]:
+            return "Продовольственные товары"
+        if id in [6, 12, 13, 14, 31]:
+            return "Сельхозтовары"
+        if id in [84, 85, 86, 87, 88, 89, 90]:
+            return "Машины, оборудование и ТС"
+        if id in [44, 45, 46, 47, 48, 49, 94]:
+            return "Древесина и целлюлозно-бумажные изделия"
+        if id in [28, 29, 30, 32, 33, 34, 35, 36, 38, 39, 40]:
+            return "Продукция химической промышленности"
+        if id in [25, 26, 27]:
+            return "Топливно-энергетические товары"
+        if id in [72, 73, 74, 75, 76, 78, 79, 80, 81, 82, 83]:
+            return "Металлы и изделия из них"
+        if id in [41, 42, 43]:
+            return "Кожевенное сырье, пушнина и изделия из них"
+        if id in [50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67]:
+            return "Текстиль, текстильные изделия и обувь"
+        if id == 71:
+            return "Драгоценные камни, драгоценные металлы и изделия из них"
+        else:
+            return "Прочее"
 
 
 
