@@ -58,6 +58,29 @@ class TableMaker:
                            "Импорт": [import_part_in_district, import_part_in_country]})
         return df
 
+    @staticmethod
+    def get_indicators(list_export, summ_export_all, summ_import_country, summ_import_all):
+        summ_export_country = sum(list_export)
+        INN = 0
+        for product in list_export:
+            part = (product/summ_export_country)**2
+            INN += part
+        T = (summ_export_country + summ_import_country)/( summ_export_all + summ_import_all) #Индекс значимости
+        if INN > 0.5:
+            description = "Высокая концентрация экспорта"
+        else:
+            description = "Низкая концентрация экспорта"
+
+        text = "Доля внешнеторгового оборота со страной"
+        df = pd.DataFrame({"Показатель": ["Индекс концентрации экспорта","Индекс взаимной торговли"],
+                           "Значение": [INN, T],
+                           "Пояснение": [description, text]})
+        return df
+
+
+
+
+
 
 
 
