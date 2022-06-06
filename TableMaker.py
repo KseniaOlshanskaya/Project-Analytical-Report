@@ -77,11 +77,11 @@ class TableMaker:
                            "Пояснение": [description, text]})
         return df
 
+    @staticmethod
+    def get_table_for_bar_chart(values_previous, values_current, labels_previous,
+                                year_previous, year_current):
 
-
-
-
-
-
-
-
+        df = pd.DataFrame({year_previous: values_previous,
+                           year_current: values_current},
+                           index=labels_previous)
+        return df
