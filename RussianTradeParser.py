@@ -111,4 +111,4 @@ class RussianTradeParser(object):
         if id in [84, 85, 86, 87, 88, 89, 90]:
             return "Машиностроительная продукция"
         else:
-            return "Прочее"
+            return "Прочие товары"

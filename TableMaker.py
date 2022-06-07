@@ -16,11 +16,19 @@ class TableMaker:
         return df
 
     @staticmethod
-    def get_table_structure(list_export, list_import):
+    def get_table_structure(dict_export, dict_import):
         product_names = ["Продовольственные товары и сырье", "Минеральные продукты", "Топливно-энергетические товары",
                          "Продукция химической промышленности", "Кожевенное сырье, пушнина и изделия",
-                         "Древесина, целлюлосно-бумажные изделия", "Текстиль и обувь", "Металлы и изделия из них",
+                         "Древесина, целлюлозно-бумажные изделия", "Текстиль, текстильные изделия и обувь", "Металлы и изделия из них",
                          "Машиностроительная продукция", "Прочие товары"]
+        list_export = []
+        list_import = []
+        for name in product_names:
+            product_summ_export = dict_export[name]/1000
+            list_export.append(product_summ_export)
+            product_summ_import = dict_import[name]/1000
+            list_import.append(product_summ_import)
+
         product_codes = ["1-24", "25-26", "27","28-40", "41-43",
                          "44-49", "50-67","72-83", "84-90",
                          "68-71, 91-98"]

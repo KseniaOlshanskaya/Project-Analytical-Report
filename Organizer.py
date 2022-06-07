@@ -12,8 +12,8 @@ class Organizer:
 
     def get_report(self):
         parser1 = RussianTradeParser()
-        parser2 = CustomsParser()
-        interface = Interface(parser1, parser2)
+        #parser2 = CustomsParser()
+        #interface = Interface(parser1, parser2)
         country = "Казахстан"
         year_previous = 2020
         year_current = 2021
@@ -39,18 +39,22 @@ class Organizer:
         # Таблица 2. Структура экспорта, импорта Россия - страна
         products_export_current = self.get_grouped_current(df_export_country)
         products_import_current = self.get_grouped_current(df_import_country, export=False)
+        TableMaker.get_table_structure(products_export_current, products_import_current)
+
+
+
         #description_export = "Структура экспорта России по отраслям за " \
                              #"2021 год. с страной: " + "Казахстан" #для графика
         #description_import = "Структура Импорта России по отраслям за " \
                              #"2021 год. с страной: " + "Казахстан"  # для графика
+        '''
         export_values_current, export_labels_current = \
             self.get_data_grouped_by_sector(products_export_current)
 
         import_values_current, import_labels_current = \
-            self.get_data_grouped_by_sector(products_import_current)
-        print(products_export_current)
-        print(products_import_current)
-        TableMaker.get_table_structure(products_export_current, products_import_current)
+            self.get_data_grouped_by_sector(products_import_current)'''
+
+
 
 
         '''# Piechart for export
@@ -167,11 +171,11 @@ class Organizer:
     @staticmethod
     def get_grouped_current(df, export=True):
         if export:
-            pd.set_option('display.max_rows', None)
-            print(df["Group"])
             products = df.groupby('Group')["ExportCurrentYear"].sum().to_dict()
+            print(products)
         else:
             products = df.groupby('Group')["ImportCurrentYear"].sum().to_dict()
+            print(products)
         return products
 
     @staticmethod
