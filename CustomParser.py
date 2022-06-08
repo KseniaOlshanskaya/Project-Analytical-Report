@@ -80,18 +80,11 @@ class CustomsParser():
 
     def get_df_doc8(self, name):
         df = pd.read_excel(name)
-        df = df.dropna()
-        pd.set_option('display.max_columns', None)
-        df = df.drop(labels=["Unnamed: 2", "Unnamed: 4", "Unnamed: 6", "Unnamed: 7",
-                             "Unnamed: 8", "Unnamed: 9",
-                             "Unnamed: 10", "Unnamed: 11",
-                             "Unnamed: 12", "Unnamed: 13"], axis=1)
-        df = df.rename(columns={df.columns[0]: 'Товарная группа',
-                                df.columns[1]: 'Наименование',
-                                df.columns[2]: 'Экспорт',
-                                df.columns[3]: 'Импорт'
-                                })
-        return df
+        df_all = df.loc[df['Unnamed: 1'] == 'ВСЕГО']
+        new_df_all = pd.DataFrame({"Экспорт": df_all['Unnamed: 3'],
+                                   "Импорт": df_all['Unnamed: 5']})
+        print(new_df_all)
+        return new_df_all
 
     def get_soup(self, url):
         response = requests.get(url, headers=self.header)

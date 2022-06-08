@@ -7,10 +7,10 @@ class TableMaker:
     def get_table_overal(export_previous, export_current,
                     import_previous, import_current,
                     year_previous,year_current):
-        df = pd.DataFrame({"Показатель": [year_previous,year_current],
+        df = pd.DataFrame({"Показатель": [str(year_previous) ,str(year_current)],
                            "Экспорт, тыс. дол": [export_previous, export_current],
                            "Импорт, тыс. дол": [import_previous, import_current],
-                           "Оборот, тыс. дол": [export_previous + import_previous, export_current + import_current],
+                           "Внешнеторговый оборот, тыс. дол": [export_previous + import_previous, export_current + import_current],
                            "Сальдо, тыс. дол": [export_previous - import_previous, export_current - import_current]})
         df = df.T
         return df
