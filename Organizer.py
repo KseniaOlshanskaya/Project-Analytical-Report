@@ -41,80 +41,48 @@ class Organizer:
         products_import_current = self.get_grouped_current(df_import_country, export=False)
         TableMaker.get_table_structure(products_export_current, products_import_current)
 
-
-
-        #description_export = "Структура экспорта России по отраслям за " \
-                             #"2021 год. с страной: " + "Казахстан" #для графика
-        #description_import = "Структура Импорта России по отраслям за " \
-                             #"2021 год. с страной: " + "Казахстан"  # для графика
-        '''
+        # График 1 (пайчарт). экспорт + импорт
         export_values_current, export_labels_current = \
             self.get_data_grouped_by_sector(products_export_current)
 
         import_values_current, import_labels_current = \
-            self.get_data_grouped_by_sector(products_import_current)'''
+            self.get_data_grouped_by_sector(products_import_current)
+        description = "Структура экспорта России по отраслям за " \
+                      + str(year_current) + " с страной: " + country
+        file_name = 'ExportRussiaPie.png'
+        FigureMaker().make_pie_chart(export_values_current, export_labels_current, description, file_name)
+        description = "Структура импорта России по отраслям за " \
+                      + str(year_current) + " с страной: " + country
+        file_name = 'ImportRussiaPie.png'
+        FigureMaker().make_pie_chart(import_values_current, import_labels_current, description, file_name)
 
-
-
-
-        '''# Piechart for export
-        description = "Структура экспорта России по отраслям за 2021 год. с страной: " + country
-        FigureMaker().make_pie_chart(values_current, labels_current)
-
-        # Barchart for export
+        # График 2 (Барчарт).
+        # Экспорт
         products_export_previous = self.get_grouped_previous(df_export_country)
         products_export_current = self.get_grouped_current(df_export_country)
-        values_current = products_export_current.values()
-        labels_current = products_export_current.keys()
-        values_previous = products_export_previous.values()
-        values_prev = [val / 1000000 for val in values_previous]
-        values_cur = [val / 1000000 for val in values_current]
-        labels = self.get_shot_labels(labels_current)
-        values_prev.pop(2)
-        values_cur.pop(2)
-        labels.pop(2)
-        values_prev.pop(7)
-        values_cur.pop(7)
-        labels.pop(7)
-        values_prev.pop(0)
-        values_cur.pop(0)
-        labels.pop(0)
-        FigureMaker.make_double_bar_chart(values_prev, values_cur, labels)
+        export_previous, export_current = \
+            self.check_part(products_export_previous, products_export_current)
+        labels = self.get_shot_labels(export_current.keys())
+        table_for_barchart = TableMaker.get_table_for_bar_chart(export_previous.values(), export_current.values(),
+                                                                labels, year_previous, year_current)
 
-        # Таблица по импорту
+        description = 'Динамика экспорта России в страну: ' + country + ' по основным товарным группам'
+        file_name = 'ExportRussiaBar.png'
+        FigureMaker.make_double_bar_chart(table_for_barchart, description, file_name)
 
-        products_import_current = self.get_grouped_current(df_import_country, export=False)
-        values, labels, description = self.get_data_grouped_by_sector(products_import_current,
-                                                                      export=False)  # Import Data for piechart (2021)
-        # Piechart for import
-        description = "Структура импорта России по отраслям за 2021 год. с страной: " + country
-        FigureMaker().make_pie_chart(values, labels, description, export=False)
-
+        # График 2 (Барчарт).
+        # Импорт
         products_import_previous = self.get_grouped_previous(df_import_country, export=False)
         products_import_current = self.get_grouped_current(df_import_country, export=False)
-        values_current = products_import_current.values()
-        values_cur = [val / 1000000 for val in values_current]
-        labels_current = products_import_current.keys()
-        values_previous = products_import_previous.values()
-        values_prev = [val / 1000000 for val in values_previous]
-        labels = self.get_shot_labels(labels_current)
-        values_prev.pop(0)
-        values_cur.pop(0)
-        labels.pop(0)
-        values_prev.pop(0)
-        values_cur.pop(0)
-        labels.pop(0)
-        values_prev.pop(0)
-        values_cur.pop(0)
-        labels.pop(0)
-        values_prev.pop(4)
-        values_cur.pop(4)
-        labels.pop(4)
-        values_prev.pop(4)
-        values_cur.pop(4)
-        labels.pop(4)
+        import_previous, import_current = \
+            self.check_part(products_import_previous, products_import_current)
+        labels = self.get_shot_labels(import_current.keys())
+        table_for_barchart = TableMaker.get_table_for_bar_chart(import_previous.values(), import_current.values(),
+                                                                labels, year_previous, year_current)
+        description = 'Динамика импорта России в страну: ' + country + ' по основным товарным группам'
+        file_name = 'ImportRussiaBar.png'
         # Barchart for import
-        FigureMaker.make_double_bar_chart(values_prev, values_cur, labels, export=False)
+        FigureMaker.make_double_bar_chart(table_for_barchart, description, file_name)
 
 
 
@@ -166,7 +134,7 @@ class Organizer:
         context['image'] = imagen
         doc.render(context)
         # сохраняем и смотрим, что получилось
-        doc.save("generated_docu.docx")'''
+        doc.save("generated_docu.docx")
 
     @staticmethod
     def get_grouped_current(df, export=True):
@@ -177,6 +145,22 @@ class Organizer:
             products = df.groupby('Group')["ImportCurrentYear"].sum().to_dict()
             print(products)
         return products
+
+    @staticmethod
+    def check_part(products_export_previous, products_export_current):
+        products_export_previous_new = {}
+        products_export_current_new = {}
+        summ_previous = sum(products_export_previous.values())
+        summ_current = sum(products_export_current.values())
+        for product_group in products_export_previous.keys():
+            part_previous = products_export_previous[product_group] / summ_previous
+            part_current = products_export_current[product_group] / summ_current
+            if part_previous < 0.03 or part_current < 0.03:
+                pass
+            else:
+                products_export_previous_new[product_group] = products_export_previous[product_group]
+                products_export_current_new[product_group] = products_export_current[product_group]
+        return products_export_previous_new, products_export_current_new
 
     @staticmethod
     def get_grouped_previous(df, export=True):
@@ -190,12 +174,12 @@ class Organizer:
     def get_data_grouped_by_sector(products):
         all_values_summ = sum(products.values())
         keys = [key for key in products if
-                products.get(key) / all_values_summ < 0.03 and key != "Прочее"]
+                products.get(key) / all_values_summ < 0.03 and key != "Прочие товары"]
         extra = [products.get(key) for key in keys]
-        summ_extra = sum(extra) + products["Прочее"]
+        summ_extra = sum(extra) + products["Прочие товары"]
         for key in keys:
             products.pop(key)
-        products.update({"Прочее": summ_extra})
+        products.update({"Прочие товары": summ_extra})
         values = products.values()
         labels = products.keys()
         return values, labels
@@ -230,8 +214,8 @@ class Organizer:
                 shot_labels.append("Текстиль")
             if label == "Машиностроительная продукция":
                 shot_labels.append("Машины")
-            if label == "Прочее":
-                shot_labels.append("Прочее")
+            if label == "Прочие товары":
+                shot_labels.append("Прочие товары")
         return shot_labels
 
     def get_group(self, id):

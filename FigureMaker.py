@@ -26,6 +26,6 @@ class FigureMaker(object):
         df_plot.plot(kind="bar", rot=22, color=["#8F9CB3", "#8CC0FF"])
         plt.xlabel("Сектор")
         plt.ylabel("млн. долл. США")
-        plt.title(description)
+        plt.title(description, x=0.5, y=1.05)
         plt.savefig(file_name)
         plt.close()
