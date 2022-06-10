@@ -1,5 +1,5 @@
 import pandas as pd
-
+from RussianTradeParser import RussianTradeParser
 
 class TableMaker:
 
@@ -93,3 +93,23 @@ class TableMaker:
                            year_current: values_current},
                            index=labels_previous)
         return df
+
+    @staticmethod
+    def get_table_structure_region(df, country):
+        country_row = df[df['Страны/товары'] == country.upper()].index.to_list()
+        df_country_row = df.loc[country_row[0]:country_row[0]+180, ['Страны/товары','Экспорт', 'Импорт']]
+        df_country_all = df_country_row[df_country_row['Страны/товары'] == country.upper()]
+        df_country_row = df_country_row.drop(df_country_all.index, axis=0)
+        df_export = pd.DataFrame(columns=['Group', 'Export'])
+        df_import = pd.DataFrame(columns=['Group', 'Import'])
+        for row in df_country_row.itertuples():
+            if row[2] != 0:
+                if not row[1][:2].isalpha():
+                    group_name = RussianTradeParser.get_group(int(row[1][:2]))
+                    df_export.append({group_name: row[2]})
+                    df_import.append({group_name: row[3]})
+
+                else:
+                    break
+        print(df_country)
+

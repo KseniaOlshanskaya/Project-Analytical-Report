@@ -70,11 +70,12 @@ class CustomsParser():
 
     def get_df_doc6(self, name):
         df = pd.read_excel(name)
-        df = df.dropna()
-        df = df.rename(columns={df.columns[0]: 'Код ВЭД',
-                                df.columns[1]: 'Страна/Товар',
-                                df.columns[2]: 'Экспорт',
-                                df.columns[3]: 'Импорт'
+        pd.set_option('display.max_columns', None)
+        df = df.drop(labels=['Unnamed: 1', 'Unnamed: 3'], axis=1)
+        df = df.fillna(0)
+        df = df.rename(columns={df.columns[0]: 'Страны/товары',
+                                df.columns[1]: 'Экспорт',
+                                df.columns[2]: 'Импорт'
                                 })
         return df
 
@@ -83,7 +84,6 @@ class CustomsParser():
         df_all = df.loc[df['Unnamed: 1'] == 'ВСЕГО']
         new_df_all = pd.DataFrame({"Экспорт": df_all['Unnamed: 3'],
                                    "Импорт": df_all['Unnamed: 5']})
-        print(new_df_all)
         return new_df_all
 
     def get_soup(self, url):

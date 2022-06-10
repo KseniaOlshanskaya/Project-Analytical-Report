@@ -11,13 +11,14 @@ from TableMaker import TableMaker
 class Organizer:
 
     def get_report(self):
-        parser1 = RussianTradeParser()
+        #parser1 = RussianTradeParser()
         parser2 = CustomsParser()
         #interface = Interface(parser1, parser2)
-        country = "Казахстан"
+        country = "Бангладеш"
         year_previous = 2020
         year_current = 2021
-        region = "Томская область"
+        region = "Новосибирская область"
+        '''
         soup = parser1.get_soup_by_country(country) #Возвращает соуп страничку репорта (экспорт + импорт)
         # Общая информация по ВЭД России и страны
         overal_info = parser1.get_overal_information(soup)
@@ -84,15 +85,15 @@ class Organizer:
         file_name = 'ImportRussiaBar.png'
         # Barchart for import
         FigureMaker.make_double_bar_chart(table_for_barchart, description, file_name)
-
+        '''
         # Регион - страна
         # Таблица 1. Основные показатели Россия - страна
 
         docs_links = parser2.get_docs_links(region, year_current, country)
-
+        '''
         name = "RegionFrom_4.xlsx"
         form = 4
-        parser2.get_doc_by_form(docs_links, name, form)
+        parser2.get_doc_by_form(docs_links, name, form) # Скачивает документ
         df_form4 = parser2.get_df_doc4(name, year_current)
         export_previous = df_form4[str(year_previous)].to_list()[1]
         export_current = df_form4[str(year_current)].to_list()[1]
@@ -100,15 +101,14 @@ class Organizer:
         import_current = df_form4[str(year_current)].to_list()[2]
         table_overal_region = TableMaker.get_table_overal(export_previous, export_current,
                                                           import_previous, import_current,
-                                                          year_previous, year_current)
-        '''
+                                                          year_previous, year_current)'''
+
         name = "RegionFrom_6.xlsx"
         form = 6
-        parser2.get_doc_by_form(docs_links, name, form)
+        #parser2.get_doc_by_form(docs_links, name, form)  #Скачивается документ
         df_form6 = parser2.get_df_doc6(name)
-        
-        df_all = df_form6[df_form6["Страна/Товар" ]== "ВСЕГО"]
-        print(df_all)
+        TableMaker.get_table_structure_region(df_form6, country)
+        '''
         df_country6 = df_form6[df_form6["Страна/Товар" ] == country.upper()]
         df_form6 = df_form6.drop(labels=[0, 1, 2], axis=0)
         groups = []
@@ -124,15 +124,15 @@ class Organizer:
 
         values, labels, description = self.get_data_grouped_by_sector(import_current)
         description = "Структура импорта НСО по отраслям за 2021 год. с страной: " + country
-        FigureMaker().make_pie_chart(values, labels, description, export=False)
+        FigureMaker().make_pie_chart(values, labels, description, export=False)'''
 
         '''
-        # ВСЕГО по региону (экспорт + импорт)
+        # ВСЕГО (одна строчка) по региону (экспорт + импорт)
         name = "RegionFrom_8.xlsx"
         form = 8
         parser2.get_doc_by_form(docs_links, name, form)
         df_form8 = parser2.get_df_doc8(name)
-        '''
+        
         context = {}
         doc = DocxTemplate("Template.docx")
         with open("Kazakhstan.txt", "r", encoding="UTF-8") as file:

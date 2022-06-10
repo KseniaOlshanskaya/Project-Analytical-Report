@@ -91,7 +91,8 @@ class RussianTradeParser(object):
                         ignore_index=True)
         return df
 
-    def get_group(self, id):
+    @staticmethod
+    def get_group(id):
         if id in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]:
             return "Продовольственные товары и сырье"
         if id in [25, 26]:
