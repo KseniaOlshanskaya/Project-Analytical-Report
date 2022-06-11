@@ -12,7 +12,6 @@ class TableMaker:
                            "Импорт, тыс. дол": [import_previous, import_current],
                            "Внешнеторговый оборот, тыс. дол": [export_previous + import_previous, export_current + import_current],
                            "Сальдо, тыс. дол": [export_previous - import_previous, export_current - import_current]})
-        df = df.T
         return df
 
     @staticmethod
@@ -52,6 +51,7 @@ class TableMaker:
                      "Импорт": [import_previous, import_current],
                      "Оборот": [amount_previous, amount_current],
                      "Сальдо": [saldo_previous, saldo_current]}
+        print(dict_rate)
         df = pd.DataFrame({"Показатель": ["Темп роста, %", "Темп прироста, %"]})
         for indicator in dict_rate.keys():
             rate_of_increase = (dict_rate[indicator][1] / dict_rate[indicator][0])*100 # темп роста

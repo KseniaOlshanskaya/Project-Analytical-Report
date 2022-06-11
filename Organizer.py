@@ -11,20 +11,18 @@ from TableMaker import TableMaker
 class Organizer:
 
     def get_report(self):
-        #parser1 = RussianTradeParser()
+        parser1 = RussianTradeParser()
         parser2 = CustomsParser()
         #interface = Interface(parser1, parser2)
-        country = "Бангладеш"
+        country = "Казахстан"
         year_previous = 2020
         year_current = 2021
         region = "Новосибирская область"
-        '''
+
         soup = parser1.get_soup_by_country(country) #Возвращает соуп страничку репорта (экспорт + импорт)
         # Общая информация по ВЭД России и страны
         overal_info = parser1.get_overal_information(soup)
-        # Все таблицы (экспорт + импорт)
         all_tables = parser1.get_tables(soup)
-        # Таблица по экспорту
         pd.set_option('display.max_columns', None)
         df_export_country = parser1.get_product_data_frame(all_tables[0])
         df_import_country = parser1.get_product_data_frame(all_tables[1], export=False)
@@ -43,7 +41,8 @@ class Organizer:
         products_import_current = self.get_grouped_current(df_import_country, export=False)
         table_structure_russia = TableMaker.get_table_structure(products_export_current, products_import_current)
         # СДЕЛАТЬ ДЕЛЕНИЕ на 1000, чтобы были тыс дол!!!!!
-        # График 1 (пайчарт). экспорт + импорт
+
+        # График 1 Росиия - страна (пайчарт).
         export_values_current, export_labels_current = \
             self.get_data_grouped_by_sector(products_export_current)
 
@@ -58,7 +57,7 @@ class Organizer:
         file_name = 'ImportRussiaPie.png'
         FigureMaker().make_pie_chart(import_values_current, import_labels_current, description, file_name)
 
-        # График 2 (Барчарт).
+        # График 2 Россия - страна (Барчарт).
         # Экспорт
         products_export_previous = self.get_grouped_previous(df_export_country)
         products_export_current = self.get_grouped_current(df_export_country)
@@ -67,12 +66,10 @@ class Organizer:
         labels = self.get_shot_labels(export_current.keys())
         table_for_barchart = TableMaker.get_table_for_bar_chart(export_previous.values(), export_current.values(),
                                                                 labels, year_previous, year_current)
-
         description = 'Динамика экспорта России в страну: ' + country + ' по основным товарным группам'
         file_name = 'ExportRussiaBar.png'
         FigureMaker.make_double_bar_chart(table_for_barchart, description, file_name)
 
-        # График 2 (Барчарт).
         # Импорт
         products_import_previous = self.get_grouped_previous(df_import_country, export=False)
         products_import_current = self.get_grouped_current(df_import_country, export=False)
@@ -83,52 +80,70 @@ class Organizer:
                                                                 labels, year_previous, year_current)
         description = 'Динамика импорта России в страну: ' + country + ' по основным товарным группам'
         file_name = 'ImportRussiaBar.png'
-        # Barchart for import
         FigureMaker.make_double_bar_chart(table_for_barchart, description, file_name)
-        '''
-        # Регион - страна
-        # Таблица 1. Основные показатели Россия - страна
 
-        docs_links = parser2.get_docs_links(region, year_current, country)
-        '''
+
+        # РЕГИОН - СТРАНА
+        docs_links_current = parser2.get_docs_links(region, year_current, country)
+        docs_links_previous = parser2.get_docs_links(region, year_previous, country)
+
+        #  Форма 4 для определения доли
         name = "RegionFrom_4.xlsx"
         form = 4
-        parser2.get_doc_by_form(docs_links, name, form) # Скачивает документ
+        parser2.get_doc_by_form(docs_links_current, name, form) # Скачивает документ
         df_form4 = parser2.get_df_doc4(name, year_current)
+
+        # ***СДЕЛАТЬ ГРАФИК ОБЩИХ ПОКАЗАТЕЛЕЙ РЕГИОНА И СТРАНЫ***
+        description = 'Динамика основных показателей региона и страны: ' + country
+        filename = 'RegionOveralBar.png'
+        # ******
+        name1 = "RegionFrom_6_"+str(year_current) + ".xlsx"
+        form = 6
+        parser2.get_doc_by_form(docs_links_current, name1, form)  #Скачивается документ year_current
+        name2 = "RegionFrom_6_" + str(year_previous) + ".xlsx"
+        parser2.get_doc_by_form(docs_links_previous, name2, form)  #Скачивается документ year_previous
+        df_form6_current = parser2.get_df_doc6(name1)
+        df_form6_previous = parser2.get_df_doc6(name2)
+        df_export_cur, df_import_cur = TableMaker.get_table_structure_region(df_form6_current, country)
+        products_export_cur = df_export_cur.groupby('Group')['Export'].sum().to_dict()
+        products_import_cur = df_import_cur.groupby('Group')['Import'].sum().to_dict()
+
+        df_export_pre, df_import_pre = TableMaker.get_table_structure_region(df_form6_previous, country)
+        products_export_pre = df_export_pre.groupby('Group')['Export'].sum().to_dict()
+        products_import_pre = df_import_pre.groupby('Group')['Import'].sum().to_dict()
+
+        # Таблица 1. Основные показатели Регион - страна
         export_previous = df_form4[str(year_previous)].to_list()[1]
         export_current = df_form4[str(year_current)].to_list()[1]
         import_previous = df_form4[str(year_previous)].to_list()[2]
         import_current = df_form4[str(year_current)].to_list()[2]
         table_overal_region = TableMaker.get_table_overal(export_previous, export_current,
                                                           import_previous, import_current,
-                                                          year_previous, year_current)'''
+                                                          year_previous, year_current)
 
-        name = "RegionFrom_6.xlsx"
-        form = 6
-        #parser2.get_doc_by_form(docs_links, name, form)  #Скачивается документ
-        df_form6 = parser2.get_df_doc6(name)
-        df_export, df_import = TableMaker.get_table_structure_region(df_form6, country)
-        products_export = df_export.groupby('Group')['Export'].sum().to_dict()
-        products_import = df_import.groupby('Group')['Import'].sum().to_dict()
-
+        # Темпы роста/прироста РЕГИОН-СТРАНА
+        table_rate_region = TableMaker.get_growth_rate_table(export_previous, export_current,
+                                                             import_previous, import_current)
+        print(table_rate_region)
         # Таблица 3 Регион. Структура
         table_structure_region = TableMaker.get_table_structure(products_export, products_import)
 
         values_ex, labels_ex = self.get_data_grouped_by_sector(products_export)
         description = "Структура экспорта " + region + " по отраслям за " + str(year_current) + \
-                      " год. со страной: " + country
-        filename = 'ExportRegionPie'
+                      " год со страной: " + country
+        filename = 'ExportRegionPie.png'
         FigureMaker().make_pie_chart(values_ex, labels_ex, description, filename)
 
-        #values, labels, description = self.get_data_grouped_by_sector(import_current)
-        #description = "Структура импорта НСО по отраслям за 2021 год. с страной: " + country
-        #FigureMaker().make_pie_chart(values, labels, description, export=False)
+        values_im, labels_im = self.get_data_grouped_by_sector(products_import)
+        description = "Структура импорта " + region + " по отраслям за " + str(year_current) + \
+                      " год с страной: " + country
+        filename = 'ImportRegionPie.png'
+        FigureMaker().make_pie_chart(values_im, labels_im, description, filename)
 
-        '''
         # ВСЕГО (одна строчка) по региону (экспорт + импорт)
         name = "RegionFrom_8.xlsx"
         form = 8
-        parser2.get_doc_by_form(docs_links, name, form)
+        parser2.get_doc_by_form(docs_links_current, name, form)
         df_form8 = parser2.get_df_doc8(name)
         
         context = {}
@@ -143,7 +158,7 @@ class Organizer:
         context['image'] = imagen
         doc.render(context)
         # сохраняем и смотрим, что получилось
-        doc.save("generated_docu.docx")'''
+        doc.save("generated_docu.docx")
 
     @staticmethod
     def get_grouped_current(df, export=True):

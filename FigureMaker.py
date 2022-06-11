@@ -18,6 +18,7 @@ class FigureMaker(object):
         plt.legend(labels, loc="best", bbox_to_anchor=(1, 1))
         plt.text(-0.7, -1.2, description, size=11)
         plt.savefig(file_name, bbox_inches='tight')
+        plt.close()
 
 
     @staticmethod
@@ -29,3 +30,14 @@ class FigureMaker(object):
         plt.title(description, x=0.5, y=1.05)
         plt.savefig(file_name)
         plt.close()
+
+    @staticmethod
+    def make_double_bar_chart_overal(df, description, file_name):
+        plt.rcParams.update({'font.size': 8})
+        df.plot(kind="bar", rot=22, color=["#8F9CB3", "#8CC0FF"])
+        plt.xlabel("Сектор")
+        plt.ylabel("тыс. долл. США")
+        plt.title(description, x=0.5, y=1.05)
+        plt.savefig(file_name)
+        plt.close()
+
