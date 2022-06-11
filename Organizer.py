@@ -42,7 +42,7 @@ class Organizer:
         products_export_current = self.get_grouped_current(df_export_country)
         products_import_current = self.get_grouped_current(df_import_country, export=False)
         table_structure_russia = TableMaker.get_table_structure(products_export_current, products_import_current)
-
+        # СДЕЛАТЬ ДЕЛЕНИЕ на 1000, чтобы были тыс дол!!!!!
         # График 1 (пайчарт). экспорт + импорт
         export_values_current, export_labels_current = \
             self.get_data_grouped_by_sector(products_export_current)
@@ -107,24 +107,20 @@ class Organizer:
         form = 6
         #parser2.get_doc_by_form(docs_links, name, form)  #Скачивается документ
         df_form6 = parser2.get_df_doc6(name)
-        TableMaker.get_table_structure_region(df_form6, country)
-        '''
-        df_country6 = df_form6[df_form6["Страна/Товар" ] == country.upper()]
-        df_form6 = df_form6.drop(labels=[0, 1, 2], axis=0)
-        groups = []
-        for row in df_form6.itertuples():
-            group = self.get_group(int(row[1]))
-            groups.append(group)
-        df_form6["Group"] = groups
-        export_current = self.get_grouped_current(df_form6)
-        import_current = self.get_grouped_current(df_form6, export=False)
-        values, labels, description = self.get_data_grouped_by_sector(export_current)
+        df_export, df_import = TableMaker.get_table_structure_region(df_form6, country)
+        products_export = df_export.groupby('Group')['Export'].sum().to_dict()
+        products_import = df_import.groupby('Group')['Import'].sum().to_dict()
+
+        # Таблица 3 Регион. Структура
+        table_structure_region = TableMaker.get_table_structure(products_export, products_import)
+
+        values, labels, description = self.get_data_grouped_by_sector(df_export)
         description = "Структура экспорта НСО по отраслям за 2021 год. с страной: " + country
         FigureMaker().make_pie_chart(values, labels, description)
 
-        values, labels, description = self.get_data_grouped_by_sector(import_current)
-        description = "Структура импорта НСО по отраслям за 2021 год. с страной: " + country
-        FigureMaker().make_pie_chart(values, labels, description, export=False)'''
+        #values, labels, description = self.get_data_grouped_by_sector(import_current)
+        #description = "Структура импорта НСО по отраслям за 2021 год. с страной: " + country
+        #FigureMaker().make_pie_chart(values, labels, description, export=False)
 
         '''
         # ВСЕГО (одна строчка) по региону (экспорт + импорт)
@@ -151,10 +147,8 @@ class Organizer:
     def get_grouped_current(df, export=True):
         if export:
             products = df.groupby('Group')["ExportCurrentYear"].sum().to_dict()
-            print(products)
         else:
             products = df.groupby('Group')["ImportCurrentYear"].sum().to_dict()
-            print(products)
         return products
 
     @staticmethod

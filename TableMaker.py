@@ -24,9 +24,15 @@ class TableMaker:
         list_export = []
         list_import = []
         for name in product_names:
-            product_summ_export = dict_export[name]/1000
+            if name in dict_export.keys():
+                product_summ_export = dict_export[name]
+            else:
+                product_summ_export = 0
             list_export.append(product_summ_export)
-            product_summ_import = dict_import[name]/1000
+            if name in dict_import.keys():
+                product_summ_import = dict_import[name]
+            else:
+                product_summ_import = 0
             list_import.append(product_summ_import)
 
         product_codes = ["1-24", "25-26", "27","28-40", "41-43",
@@ -103,13 +109,11 @@ class TableMaker:
         df_export = pd.DataFrame(columns=['Group', 'Export'])
         df_import = pd.DataFrame(columns=['Group', 'Import'])
         for row in df_country_row.itertuples():
-            if row[2] != 0:
+            if row[2] != 0 or row[3] != 0:
                 if not row[1][:2].isalpha():
                     group_name = RussianTradeParser.get_group(int(row[1][:2]))
-                    df_export.append({group_name: row[2]})
-                    df_import.append({group_name: row[3]})
-
+                    df_export = df_export.append({'Group': group_name, 'Export': row[2]}, ignore_index=True)
+                    df_import = df_import.append({'Group': group_name, 'Import': row[3]}, ignore_index=True)
                 else:
                     break
-        print(df_country)
-
+        return df_export, df_import
