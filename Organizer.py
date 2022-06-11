@@ -114,9 +114,11 @@ class Organizer:
         # Таблица 3 Регион. Структура
         table_structure_region = TableMaker.get_table_structure(products_export, products_import)
 
-        values, labels, description = self.get_data_grouped_by_sector(df_export)
-        description = "Структура экспорта НСО по отраслям за 2021 год. с страной: " + country
-        FigureMaker().make_pie_chart(values, labels, description)
+        values_ex, labels_ex = self.get_data_grouped_by_sector(products_export)
+        description = "Структура экспорта " + region + " по отраслям за " + str(year_current) + \
+                      " год. со страной: " + country
+        filename = 'ExportRegionPie'
+        FigureMaker().make_pie_chart(values_ex, labels_ex, description, filename)
 
         #values, labels, description = self.get_data_grouped_by_sector(import_current)
         #description = "Структура импорта НСО по отраслям за 2021 год. с страной: " + country

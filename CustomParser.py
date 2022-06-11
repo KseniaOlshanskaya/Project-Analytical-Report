@@ -23,7 +23,8 @@ class CustomsParser():
     def get_docs_links(self, region, year, country):
         year_link =""
         region_link = self.region_links[region]
-        soup = self.get_soup(region_link)
+        src = self.get_html(region_link)
+        soup = BeautifulSoup(src, "lxml")
         divs = soup.find_all("div", class_="section-link__item")
         for div in divs:
             year_item = div.find("div", class_="section-link__item--text "
@@ -31,14 +32,16 @@ class CustomsParser():
             if year == int(year_item):
                 year_link = div.a.get("href")
                 break
-        soup = self.get_soup(year_link)
+        src = self.get_html(year_link)
+        soup = BeautifulSoup(src, "lxml")
         report_links = soup.find("div", class_="pin").find_all("a")
         report_link = ""
         indicator = "за "+ str(year) +" год"
         for link in report_links:
             if indicator in link.text:
                 report_link = link.get("href")
-        soup = self.get_soup(report_link)
+        src = self.get_html(report_link)
+        soup = BeautifulSoup(src, "lxml")
         doc_links = self.get_docs(soup)
         return doc_links
 
@@ -86,11 +89,22 @@ class CustomsParser():
                                    "Импорт": df_all['Unnamed: 5']})
         return new_df_all
 
-    def get_soup(self, url):
-        response = requests.get(url, headers=self.header)
-        src = response.text
-        soup = BeautifulSoup(src, "lxml")
-        return soup
+    def get_html(self, url, tryCount = 5):
+        count = 1
+        overpassExceptionTimeoutMs = 1
+        for i in range(0, tryCount + 1):
+            try:
+                sleep(overpassExceptionTimeoutMs * i)
+                response = requests.get(url, headers=self.header)
+                src = response.text
+                return src
+            except:
+                if(count == tryCount):
+                    EOFError()
+                else:
+                    sleep(overpassExceptionTimeoutMs)
+                    overpassExceptionTimeoutMs *= 2
+
 
     def get_siberian_district_soup(self):
         url = "https://stu.customs.gov.ru/document/text/330148"
@@ -103,8 +117,7 @@ class CustomsParser():
 
     def get_region_links(self):
         url = "https://stu.customs.gov.ru/folder/143386"
-        response = requests.get(url, headers=self.header)
-        src = response.text
+        src = self.get_html(url)
         soup = BeautifulSoup(src, "lxml")
         divs = soup.find_all("div", class_="section-link__item")
         dict_links = {}
