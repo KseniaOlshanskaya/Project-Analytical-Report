@@ -51,7 +51,6 @@ class TableMaker:
                      "Импорт": [import_previous, import_current],
                      "Оборот": [amount_previous, amount_current],
                      "Сальдо": [saldo_previous, saldo_current]}
-        print(dict_rate)
         df = pd.DataFrame({"Показатель": ["Темп роста, %", "Темп прироста, %"]})
         for indicator in dict_rate.keys():
             rate_of_increase = (dict_rate[indicator][1] / dict_rate[indicator][0])*100 # темп роста
@@ -73,13 +72,16 @@ class TableMaker:
         return df
 
     @staticmethod
-    def get_indicators(list_export, summ_export_all, summ_import_country, summ_import_all):
-        summ_export_country = sum(list_export)
+    def get_indicators(list_export_region, summ_export_all, summ_import_region, summ_import_all):
+        summ_export_region = sum(list_export_region)
+        summ_export_all = str(summ_export_all).strip()
+        summ_import_all = str(summ_import_all).strip()
+        summ_import_region = str(summ_import_region).strip()
         INN = 0
-        for product in list_export:
-            part = (product/summ_export_country)**2
+        for product in list_export_region:
+            part = (product/summ_export_region)**2
             INN += part
-        T = (summ_export_country + summ_import_country)/( summ_export_all + summ_import_all) #Индекс значимости
+        T = (summ_export_region + float(summ_import_region))/(float(summ_export_all) + float(summ_import_all)) #Индекс значимости
         if INN > 0.5:
             description = "Высокая концентрация экспорта"
         else:
@@ -98,6 +100,27 @@ class TableMaker:
         df = pd.DataFrame({year_previous: values_previous,
                            year_current: values_current},
                            index=labels_previous)
+        return df
+
+    @staticmethod
+    def get_dict_most_frequent(products_dict):
+        dict_most_frequent = {}
+        summ_all = sum(products_dict.values())
+        for key in products_dict.keys():
+            part = products_dict[key] / summ_all
+            dict_most_frequent.update({key: part})
+        return dict_most_frequent
+
+    @staticmethod
+    def get_table_rates_by_sectors(dict_prev, dict_cur):
+        df = pd.DataFrame({"Товарная группа": ["Темп роста, %", "Темп прироста, %"]})
+        for group in dict_prev:
+            if group not in dict_prev.keys() or group not in dict_cur.keys():
+                pass
+            else:
+                rate_of_increase = (dict_cur[group] / dict_prev[group]) * 100  # темп роста
+                accession_rate = rate_of_increase - 100  # темп прироста
+                df[group] = [rate_of_increase, accession_rate]
         return df
 
     @staticmethod

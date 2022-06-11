@@ -113,10 +113,10 @@ class Organizer:
         products_import_pre = df_import_pre.groupby('Group')['Import'].sum().to_dict()
 
         # Таблица 1. Основные показатели Регион - страна
-        export_previous = df_form4[str(year_previous)].to_list()[1]
-        export_current = df_form4[str(year_current)].to_list()[1]
-        import_previous = df_form4[str(year_previous)].to_list()[2]
-        import_current = df_form4[str(year_current)].to_list()[2]
+        export_previous = sum(products_export_pre.values())
+        export_current = sum(products_export_cur.values())
+        import_previous = sum(products_import_pre.values())
+        import_current = sum(products_import_cur.values())
         table_overal_region = TableMaker.get_table_overal(export_previous, export_current,
                                                           import_previous, import_current,
                                                           year_previous, year_current)
@@ -124,28 +124,46 @@ class Organizer:
         # Темпы роста/прироста РЕГИОН-СТРАНА
         table_rate_region = TableMaker.get_growth_rate_table(export_previous, export_current,
                                                              import_previous, import_current)
-        print(table_rate_region)
-        # Таблица 3 Регион. Структура
-        table_structure_region = TableMaker.get_table_structure(products_export, products_import)
 
-        values_ex, labels_ex = self.get_data_grouped_by_sector(products_export)
+        # Таблица 3 Регион. Структура
+        table_structure_region = TableMaker.get_table_structure(products_export_cur, products_import_cur)
+
+        # График 1 Регион. Пайчарт
+        values_ex, labels_ex = self.get_data_grouped_by_sector(products_export_cur)
         description = "Структура экспорта " + region + " по отраслям за " + str(year_current) + \
                       " год со страной: " + country
         filename = 'ExportRegionPie.png'
         FigureMaker().make_pie_chart(values_ex, labels_ex, description, filename)
 
-        values_im, labels_im = self.get_data_grouped_by_sector(products_import)
+        values_im, labels_im = self.get_data_grouped_by_sector(products_import_cur)
         description = "Структура импорта " + region + " по отраслям за " + str(year_current) + \
                       " год с страной: " + country
         filename = 'ImportRegionPie.png'
         FigureMaker().make_pie_chart(values_im, labels_im, description, filename)
+
+        # Основные секторы
+        dict_most_frequent_ex = TableMaker.get_dict_most_frequent(products_export_cur)
+        dict_most_frequent_im = TableMaker.get_dict_most_frequent(products_import_cur)
+
+        #Наибольший прирост объема:
+        df_export_rates = TableMaker.get_table_rates_by_sectors(products_export_pre, products_export_cur)
+        df_import_rates = TableMaker.get_table_rates_by_sectors(products_import_pre, products_import_cur)
 
         # ВСЕГО (одна строчка) по региону (экспорт + импорт)
         name = "RegionFrom_8.xlsx"
         form = 8
         parser2.get_doc_by_form(docs_links_current, name, form)
         df_form8 = parser2.get_df_doc8(name)
-        
+
+        # Доля в ФО, РФ
+        # ****
+
+        # Индикаторы ВЭД
+
+        table_indicators = TableMaker.get_indicators(products_export_cur.values(),df_form8['Экспорт'],
+                                                     import_current, df_form8['Импорт'])
+
+        '''
         context = {}
         doc = DocxTemplate("Template.docx")
         with open("Kazakhstan.txt", "r", encoding="UTF-8") as file:
@@ -158,7 +176,7 @@ class Organizer:
         context['image'] = imagen
         doc.render(context)
         # сохраняем и смотрим, что получилось
-        doc.save("generated_docu.docx")
+        doc.save("generated_docu.docx")'''
 
     @staticmethod
     def get_grouped_current(df, export=True):
@@ -206,13 +224,6 @@ class Organizer:
         labels = products.keys()
         return values, labels
 
-    @staticmethod
-    def define_district(region):
-        pass
-
-    @staticmethod
-    def get_district_data(district, df_country):
-        pass
 
     @staticmethod
     def get_shot_labels(labels):
