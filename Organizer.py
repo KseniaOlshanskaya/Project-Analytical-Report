@@ -1,3 +1,4 @@
+from itertools import product
 import pandas as pd
 from RussianTradeParser import RussianTradeParser
 from FigureMaker import FigureMaker
@@ -6,6 +7,7 @@ from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
 from Interface import Interface
 from TableMaker import TableMaker
+from CreateReportFile import CreateDocFile
 
 
 class Organizer:
@@ -18,12 +20,17 @@ class Organizer:
         year_previous = 2020
         year_current = 2021
         region = "Новосибирская область"
+        context = {}
+        context['country'] = country
+        context['region'] = 'Новосибирская область'
+        context['year_current'] = year_current
+        doc = DocxTemplate("Template.docx")
 
         soup = parser1.get_soup_by_country(country) #Возвращает соуп страничку репорта (экспорт + импорт)
         # Общая информация по ВЭД России и страны
         overal_info = parser1.get_overal_information(soup)
+        context['overal_info'] = overal_info
         all_tables = parser1.get_tables(soup)
-        pd.set_option('display.max_columns', None)
         df_export_country = parser1.get_product_data_frame(all_tables[0])
         df_import_country = parser1.get_product_data_frame(all_tables[1], export=False)
 
@@ -36,11 +43,19 @@ class Organizer:
                                                           summ_import_russia_previous, summ_import_russia_current,
                                                           year_previous, year_current)
 
+        table_overal_russia = table_overal_russia.to_dict('record')
+
+        context['table_overal_russia'] = table_overal_russia
+
+
         # Таблица 2. Структура экспорта, импорта Россия - страна
         products_export_current = self.get_grouped_current(df_export_country)
         products_import_current = self.get_grouped_current(df_import_country, export=False)
-        table_structure_russia = TableMaker.get_table_structure(products_export_current, products_import_current)
-        # СДЕЛАТЬ ДЕЛЕНИЕ на 1000, чтобы были тыс дол!!!!!
+        products_export_current_ = {key: products_export_current[key]/1000 for key in products_export_current}
+        products_import_current_ = {key: products_import_current[key] / 1000 for key in products_import_current}
+        table_structure_russia = TableMaker.get_table_structure(products_export_current_, products_import_current_)
+        table_structure_russia = table_structure_russia.to_dict('record')
+        context['table_structure_russia'] = table_structure_russia
 
         # График 1 Росиия - страна (пайчарт).
         export_values_current, export_labels_current = \
@@ -52,10 +67,15 @@ class Organizer:
                       + str(year_current) + " с страной: " + country
         file_name = 'ExportRussiaPie.png'
         FigureMaker().make_pie_chart(export_values_current, export_labels_current, description, file_name)
+        export_Russia_pie = InlineImage(doc, 'ExportRussiaPie.png', width=Mm(150))  # width is in millimetres
+        context['export_Russia_pie'] = export_Russia_pie
+
         description = "Структура импорта России по отраслям за " \
                       + str(year_current) + " с страной: " + country
         file_name = 'ImportRussiaPie.png'
         FigureMaker().make_pie_chart(import_values_current, import_labels_current, description, file_name)
+        import_Russia_pie = InlineImage(doc, 'ImportRussiaPie.png', width=Mm(150))  # width is in millimetres
+        context['import_Russia_pie'] = import_Russia_pie
 
         # График 2 Россия - страна (Барчарт).
         # Экспорт
@@ -69,7 +89,8 @@ class Organizer:
         description = 'Динамика экспорта России в страну: ' + country + ' по основным товарным группам'
         file_name = 'ExportRussiaBar.png'
         FigureMaker.make_double_bar_chart(table_for_barchart, description, file_name)
-
+        export_Russia_bar = InlineImage(doc, 'ExportRussiaBar.png', width=Mm(150))  # width is in millimetres
+        context['export_Russia_bar'] = export_Russia_bar
         # Импорт
         products_import_previous = self.get_grouped_previous(df_import_country, export=False)
         products_import_current = self.get_grouped_current(df_import_country, export=False)
@@ -81,7 +102,8 @@ class Organizer:
         description = 'Динамика импорта России в страну: ' + country + ' по основным товарным группам'
         file_name = 'ImportRussiaBar.png'
         FigureMaker.make_double_bar_chart(table_for_barchart, description, file_name)
-
+        import_Russia_bar = InlineImage(doc, 'ImportRussiaBar.png', width=Mm(150))  # width is in millimetres
+        context['import_Russia_bar'] = import_Russia_bar
 
         # РЕГИОН - СТРАНА
         docs_links_current = parser2.get_docs_links(region, year_current, country)
@@ -120,13 +142,19 @@ class Organizer:
         table_overal_region = TableMaker.get_table_overal(export_previous, export_current,
                                                           import_previous, import_current,
                                                           year_previous, year_current)
+        table_overal_region = table_overal_region.to_dict('record')
+        context['table_overal_region'] = table_overal_region
 
         # Темпы роста/прироста РЕГИОН-СТРАНА
         table_rate_region = TableMaker.get_growth_rate_table(export_previous, export_current,
                                                              import_previous, import_current)
+        table_rate_region = table_rate_region.to_dict('record')
+        context['table_rate_region'] = table_rate_region
 
         # Таблица 3 Регион. Структура
         table_structure_region = TableMaker.get_table_structure(products_export_cur, products_import_cur)
+        table_structure_region = table_structure_region.to_dict('record')
+        context['table_structure_region'] = table_structure_region
 
         # График 1 Регион. Пайчарт
         values_ex, labels_ex = self.get_data_grouped_by_sector(products_export_cur)
@@ -134,20 +162,28 @@ class Organizer:
                       " год со страной: " + country
         filename = 'ExportRegionPie.png'
         FigureMaker().make_pie_chart(values_ex, labels_ex, description, filename)
+        exportRegionPie = InlineImage(doc, 'ExportRegionPie.png', width=Mm(150))  # width is in millimetres
+        context['exportRegionPie'] = exportRegionPie
 
         values_im, labels_im = self.get_data_grouped_by_sector(products_import_cur)
         description = "Структура импорта " + region + " по отраслям за " + str(year_current) + \
                       " год с страной: " + country
         filename = 'ImportRegionPie.png'
         FigureMaker().make_pie_chart(values_im, labels_im, description, filename)
+        importRegionPie = InlineImage(doc, 'ImportRegionPie.png', width=Mm(150))  # width is in millimetres
+        context['importRegionPie'] = importRegionPie
 
         # Основные секторы
-        dict_most_frequent_ex = TableMaker.get_dict_most_frequent(products_export_cur)
-        dict_most_frequent_im = TableMaker.get_dict_most_frequent(products_import_cur)
+        list_most_frequent_ex = TableMaker.get_dict_most_frequent(products_export_cur)
+        context['list_most_frequent_ex'] = list_most_frequent_ex
+        list_most_frequent_im = TableMaker.get_dict_most_frequent(products_import_cur)
+        context['list_most_frequent_im'] = list_most_frequent_im
 
         #Наибольший прирост объема:
-        df_export_rates = TableMaker.get_table_rates_by_sectors(products_export_pre, products_export_cur)
-        df_import_rates = TableMaker.get_table_rates_by_sectors(products_import_pre, products_import_cur)
+        product_group_rates_ex = TableMaker.get_table_rates_by_sectors(products_export_pre, products_export_cur)
+        context['product_group_rates_ex'] = product_group_rates_ex
+        product_group_rates_im = TableMaker.get_table_rates_by_sectors(products_import_pre, products_import_cur)
+        context['product_group_rates_im'] = product_group_rates_im
 
         # ВСЕГО (одна строчка) по региону (экспорт + импорт)
         name = "RegionFrom_8.xlsx"
@@ -159,24 +195,12 @@ class Organizer:
         # ****
 
         # Индикаторы ВЭД
-
+        doc.render(context)
+        # сохраняем и смотрим, что получилось
+        doc.save("generated_doca.docx")
         table_indicators = TableMaker.get_indicators(products_export_cur.values(),df_form8['Экспорт'],
                                                      import_current, df_form8['Импорт'])
 
-        '''
-        context = {}
-        doc = DocxTemplate("Template.docx")
-        with open("Kazakhstan.txt", "r", encoding="UTF-8") as file:
-            text = file.readline()
-        context['country'] = country
-        context['region'] = 'Новосибирская область'
-        context['year'] = '2021'
-        context['Текст'] = text
-        imagen = InlineImage(doc, 'ExportRussiaPie.png', width=Mm(150))  # width is in millimetres
-        context['image'] = imagen
-        doc.render(context)
-        # сохраняем и смотрим, что получилось
-        doc.save("generated_docu.docx")'''
 
     @staticmethod
     def get_grouped_current(df, export=True):

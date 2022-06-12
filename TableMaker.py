@@ -7,11 +7,15 @@ class TableMaker:
     def get_table_overal(export_previous, export_current,
                     import_previous, import_current,
                     year_previous,year_current):
-        df = pd.DataFrame({"Показатель": [str(year_previous) ,str(year_current)],
-                           "Экспорт, тыс. дол": [export_previous, export_current],
-                           "Импорт, тыс. дол": [import_previous, import_current],
-                           "Внешнеторговый оборот, тыс. дол": [export_previous + import_previous, export_current + import_current],
-                           "Сальдо, тыс. дол": [export_previous - import_previous, export_current - import_current]})
+        export_previous = round(export_previous, 2)
+        export_current = round(export_current, 2)
+        import_previous = round(import_previous, 2)
+        import_current = round(import_current, 2)
+        df = pd.DataFrame({"Index": [str(year_previous) ,str(year_current)],
+                           "Export": [export_previous, export_current],
+                           "Import": [import_previous, import_current],
+                           "Oborot": [round(export_previous + import_previous, 2), round(export_current + import_current, 2)],
+                           "Saldo": [round(export_previous - import_previous, 2), round(export_current - import_current, 2)]})
         return df
 
     @staticmethod
@@ -27,18 +31,18 @@ class TableMaker:
                 product_summ_export = dict_export[name]
             else:
                 product_summ_export = 0
-            list_export.append(product_summ_export)
+            list_export.append(round(product_summ_export, 2))
             if name in dict_import.keys():
                 product_summ_import = dict_import[name]
             else:
                 product_summ_import = 0
-            list_import.append(product_summ_import)
+            list_import.append(round(product_summ_import, 2))
 
         product_codes = ["1-24", "25-26", "27","28-40", "41-43",
                          "44-49", "50-67","72-83", "84-90",
                          "68-71, 91-98"]
-        df = pd.DataFrame({"Код ТН ВЭД": product_codes, "Наименование сегмента товаров": product_names,
-                           "Экспорт, тыс. дол": list_export, "Импорт, тыс. дол": list_import})
+        df = pd.DataFrame({"Code": product_codes, "Product_name": product_names,
+                           "Export": list_export, "Import": list_import})
         return df
 
     @staticmethod
@@ -47,16 +51,15 @@ class TableMaker:
         amount_current = export_current + import_current
         saldo_previous = export_previous - import_previous
         saldo_current = export_current - import_current
-        dict_rate = {"Экспорт":[export_previous, export_current],
-                     "Импорт": [import_previous, import_current],
-                     "Оборот": [amount_previous, amount_current],
-                     "Сальдо": [saldo_previous, saldo_current]}
-        df = pd.DataFrame({"Показатель": ["Темп роста, %", "Темп прироста, %"]})
+        dict_rate = {"Export":[export_previous, export_current],
+                     "Import": [import_previous, import_current],
+                     "Oborot": [amount_previous, amount_current],
+                     "Saldo": [saldo_previous, saldo_current]}
+        df = pd.DataFrame({"Indicator": ["Темп роста, %", "Темп прироста, %"]})
         for indicator in dict_rate.keys():
             rate_of_increase = (dict_rate[indicator][1] / dict_rate[indicator][0])*100 # темп роста
             accession_rate = rate_of_increase - 100 # темп прироста
-            df[indicator] = [rate_of_increase, accession_rate]
-        df = df.T
+            df[indicator] = [round(rate_of_increase, 2), round(accession_rate, 2)]
         return df
 
     @staticmethod
@@ -104,24 +107,28 @@ class TableMaker:
 
     @staticmethod
     def get_dict_most_frequent(products_dict):
-        dict_most_frequent = {}
+        list_most_frequent = []
         summ_all = sum(products_dict.values())
-        for key in products_dict.keys():
-            part = products_dict[key] / summ_all
-            dict_most_frequent.update({key: part})
-        return dict_most_frequent
+        for key_ in products_dict.keys():
+            part = products_dict[key_] / summ_all
+            dict_ = dict(Group=key_, Part=round(part, 2))
+            list_most_frequent.append(dict_)
+            dict_ = {}
+        return list_most_frequent
 
     @staticmethod
     def get_table_rates_by_sectors(dict_prev, dict_cur):
-        df = pd.DataFrame({"Товарная группа": ["Темп роста, %", "Темп прироста, %"]})
+        list_product_group_rates = []
         for group in dict_prev:
             if group not in dict_prev.keys() or group not in dict_cur.keys():
                 pass
             else:
                 rate_of_increase = (dict_cur[group] / dict_prev[group]) * 100  # темп роста
                 accession_rate = rate_of_increase - 100  # темп прироста
-                df[group] = [rate_of_increase, accession_rate]
-        return df
+                dict_ = dict(Group=group, Rate1=rate_of_increase, Rate2=accession_rate)
+                list_product_group_rates.append(dict_)
+                dict_ = {}
+        return list_product_group_rates
 
     @staticmethod
     def get_table_structure_region(df, country):
@@ -135,8 +142,8 @@ class TableMaker:
             if row[2] != 0 or row[3] != 0:
                 if not row[1][:2].isalpha():
                     group_name = RussianTradeParser.get_group(int(row[1][:2]))
-                    df_export = df_export.append({'Group': group_name, 'Export': row[2]}, ignore_index=True)
-                    df_import = df_import.append({'Group': group_name, 'Import': row[3]}, ignore_index=True)
+                    df_export = df_export.append({'Group': group_name, 'Export': round(row[2], 2)}, ignore_index=True)
+                    df_import = df_import.append({'Group': group_name, 'Import': round(row[3], 2)}, ignore_index=True)
                 else:
                     break
         return df_export, df_import

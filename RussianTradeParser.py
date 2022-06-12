@@ -54,7 +54,9 @@ class RussianTradeParser(object):
             i = i.text
             i = i.replace("b", "")
             i = i.replace("/b", "")
-            overal_information.append(i)
+            dict_ = dict(N=i, text=i)
+            overal_information.append(dict_)
+            dict_ = {}
         return overal_information
 
     def get_product_data_frame(self, table, export=True):
