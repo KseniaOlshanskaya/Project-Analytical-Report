@@ -1,8 +1,10 @@
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 import pandas as pd
 from RussianTradeParser import RussianTradeParser
 
-class TableMaker:
 
+class TableMaker:
     @staticmethod
     def get_table_overal(export_previous, export_current,
                     import_previous, import_current,
@@ -57,9 +59,10 @@ class TableMaker:
                      "Saldo": [saldo_previous, saldo_current]}
         df = pd.DataFrame({"Indicator": ["Темп роста, %", "Темп прироста, %"]})
         for indicator in dict_rate.keys():
-            rate_of_increase = (dict_rate[indicator][1] / dict_rate[indicator][0])*100 # темп роста
-            accession_rate = rate_of_increase - 100 # темп прироста
-            df[indicator] = [round(rate_of_increase, 2), round(accession_rate, 2)]
+            if dict_rate[indicator][0] != 0:
+                rate_of_increase = (dict_rate[indicator][1] / dict_rate[indicator][0])*100 # темп роста
+                accession_rate = rate_of_increase - 100 # темп прироста
+                df[indicator] = [round(rate_of_increase, 2), round(accession_rate, 2)]
         return df
 
     @staticmethod
@@ -123,17 +126,20 @@ class TableMaker:
             if group not in dict_prev.keys() or group not in dict_cur.keys():
                 pass
             else:
-                rate_of_increase = (dict_cur[group] / dict_prev[group]) * 100  # темп роста
-                accession_rate = rate_of_increase - 100  # темп прироста
-                dict_ = dict(Group=group, Rate1=rate_of_increase, Rate2=accession_rate)
-                list_product_group_rates.append(dict_)
-                dict_ = {}
+                if dict_prev[group] != 0:
+                    rate_of_increase = (dict_cur[group] / dict_prev[group]) * 100  # темп роста
+                    accession_rate = rate_of_increase - 100  # темп прироста
+                    dict_ = dict(Group=group, Rate1=round(rate_of_increase), Rate2=round(accession_rate))
+                    list_product_group_rates.append(dict_)
+                    dict_ = {}
+                else:
+                    pass
         return list_product_group_rates
 
     @staticmethod
     def get_table_structure_region(df, country):
         country_row = df[df['Страны/товары'] == country.upper()].index.to_list()
-        df_country_row = df.loc[country_row[0]:country_row[0]+180, ['Страны/товары','Экспорт', 'Импорт']]
+        df_country_row = df.loc[country_row[0]:country_row[0]+100, ['Страны/товары','Экспорт', 'Импорт']]
         df_country_all = df_country_row[df_country_row['Страны/товары'] == country.upper()]
         df_country_row = df_country_row.drop(df_country_all.index, axis=0)
         df_export = pd.DataFrame(columns=['Group', 'Export'])

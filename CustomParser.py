@@ -1,8 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 import pandas as pd
 from time import sleep
-from datetime import date
+
+
 
 class CustomsParser():
     def __init__(self):
@@ -104,7 +107,6 @@ class CustomsParser():
                 else:
                     sleep(overpassExceptionTimeoutMs)
                     overpassExceptionTimeoutMs *= 2
-
 
     def get_siberian_district_soup(self):
         url = "https://stu.customs.gov.ru/document/text/330148"

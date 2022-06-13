@@ -1,38 +1,33 @@
-from itertools import product
-import pandas as pd
 from RussianTradeParser import RussianTradeParser
 from FigureMaker import FigureMaker
 from CustomParser import CustomsParser
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Mm
-from Interface import Interface
 from TableMaker import TableMaker
-from CreateReportFile import CreateDocFile
+import os
 
 
 class Organizer:
+    def __init__(self):
+        self.parser1 = RussianTradeParser()
+        self.parser2 = CustomsParser()
 
-    def get_report(self):
-        parser1 = RussianTradeParser()
-        parser2 = CustomsParser()
-        #interface = Interface(parser1, parser2)
-        country = "Казахстан"
-        year_previous = 2020
-        year_current = 2021
-        region = "Новосибирская область"
+    def get_report(self, region, country, year_current, year_previous):
+        indicator_export = True
+        indicator_import = True
         context = {}
         context['country'] = country
-        context['region'] = 'Новосибирская область'
+        context['region'] = region
         context['year_current'] = year_current
         doc = DocxTemplate("Template.docx")
-
-        soup = parser1.get_soup_by_country(country) #Возвращает соуп страничку репорта (экспорт + импорт)
+        soup = self.parser1.get_soup_by_country(country) #Возвращает соуп страничку репорта (экспорт + импорт)
         # Общая информация по ВЭД России и страны
-        overal_info = parser1.get_overal_information(soup)
+        overal_info = self.parser1.get_overal_information(soup)
         context['overal_info'] = overal_info
-        all_tables = parser1.get_tables(soup)
-        df_export_country = parser1.get_product_data_frame(all_tables[0])
-        df_import_country = parser1.get_product_data_frame(all_tables[1], export=False)
+        all_tables = self.parser1.get_tables(soup)
+        df_export_country = self.parser1.get_product_data_frame(all_tables[0])
+        df_import_country = self.parser1.get_product_data_frame(all_tables[1],
+                                                           export=False)
 
         # Таблица 1. Основные показатели Россия - страна
         summ_export_russia_previous = sum(df_export_country["ExportPreviousYear"].to_list())/1000
@@ -106,26 +101,24 @@ class Organizer:
         context['import_Russia_bar'] = import_Russia_bar
 
         # РЕГИОН - СТРАНА
-        docs_links_current = parser2.get_docs_links(region, year_current, country)
-        docs_links_previous = parser2.get_docs_links(region, year_previous, country)
+        docs_links_current = self.parser2.get_docs_links(region, year_current, country)
+        docs_links_previous = self.parser2.get_docs_links(region, year_previous, country)
 
         #  Форма 4 для определения доли
-        name = "RegionFrom_4.xlsx"
-        form = 4
-        parser2.get_doc_by_form(docs_links_current, name, form) # Скачивает документ
-        df_form4 = parser2.get_df_doc4(name, year_current)
+        #name = "RegionFrom_4.xlsx"
+        #form = 4
+        #self.parser2.get_doc_by_form(docs_links_current, name, form) # Скачивает документ
+        #df_form4 = self.parser2.get_df_doc4(name, year_current)
 
         # ***СДЕЛАТЬ ГРАФИК ОБЩИХ ПОКАЗАТЕЛЕЙ РЕГИОНА И СТРАНЫ***
-        description = 'Динамика основных показателей региона и страны: ' + country
-        filename = 'RegionOveralBar.png'
         # ******
         name1 = "RegionFrom_6_"+str(year_current) + ".xlsx"
         form = 6
-        parser2.get_doc_by_form(docs_links_current, name1, form)  #Скачивается документ year_current
+        self.parser2.get_doc_by_form(docs_links_current, name1, form)  #Скачивается документ year_current
         name2 = "RegionFrom_6_" + str(year_previous) + ".xlsx"
-        parser2.get_doc_by_form(docs_links_previous, name2, form)  #Скачивается документ year_previous
-        df_form6_current = parser2.get_df_doc6(name1)
-        df_form6_previous = parser2.get_df_doc6(name2)
+        self.parser2.get_doc_by_form(docs_links_previous, name2, form)  #Скачивается документ year_previous
+        df_form6_current = self.parser2.get_df_doc6(name1)
+        df_form6_previous = self.parser2.get_df_doc6(name2)
         df_export_cur, df_import_cur = TableMaker.get_table_structure_region(df_form6_current, country)
         products_export_cur = df_export_cur.groupby('Group')['Export'].sum().to_dict()
         products_import_cur = df_import_cur.groupby('Group')['Import'].sum().to_dict()
@@ -157,39 +150,48 @@ class Organizer:
         context['table_structure_region'] = table_structure_region
 
         # График 1 Регион. Пайчарт
-        values_ex, labels_ex = self.get_data_grouped_by_sector(products_export_cur)
-        description = "Структура экспорта " + region + " по отраслям за " + str(year_current) + \
-                      " год со страной: " + country
-        filename = 'ExportRegionPie.png'
-        FigureMaker().make_pie_chart(values_ex, labels_ex, description, filename)
-        exportRegionPie = InlineImage(doc, 'ExportRegionPie.png', width=Mm(150))  # width is in millimetres
-        context['exportRegionPie'] = exportRegionPie
-
-        values_im, labels_im = self.get_data_grouped_by_sector(products_import_cur)
-        description = "Структура импорта " + region + " по отраслям за " + str(year_current) + \
-                      " год с страной: " + country
-        filename = 'ImportRegionPie.png'
-        FigureMaker().make_pie_chart(values_im, labels_im, description, filename)
-        importRegionPie = InlineImage(doc, 'ImportRegionPie.png', width=Mm(150))  # width is in millimetres
-        context['importRegionPie'] = importRegionPie
+        if sum(products_export_cur.values()) == 0:
+            indicator_export = False
+        else:
+            values_ex, labels_ex = self.get_data_grouped_by_sector(products_export_cur)
+            description = "Структура экспорта " + region + " по отраслям за " + str(year_current) + \
+                          " год со страной: " + country
+            filename = 'ExportRegionPie.png'
+            FigureMaker().make_pie_chart(values_ex, labels_ex, description, filename)
+            exportRegionPie = InlineImage(doc, 'ExportRegionPie.png', width=Mm(150))  # width is in millimetres
+            context['exportRegionPie'] = exportRegionPie
+        if sum(products_import_cur.values()) == 0:
+            indicator_import = False
+        else:
+            values_im, labels_im = self.get_data_grouped_by_sector(products_import_cur)
+            description = "Структура импорта " + region + " по отраслям за " + str(year_current) + \
+                          " год с страной: " + country
+            filename = 'ImportRegionPie.png'
+            FigureMaker().make_pie_chart(values_im, labels_im, description, filename)
+            importRegionPie = InlineImage(doc, 'ImportRegionPie.png', width=Mm(150))  # width is in millimetres
+            context['importRegionPie'] = importRegionPie
 
         # Основные секторы
-        list_most_frequent_ex = TableMaker.get_dict_most_frequent(products_export_cur)
-        context['list_most_frequent_ex'] = list_most_frequent_ex
-        list_most_frequent_im = TableMaker.get_dict_most_frequent(products_import_cur)
-        context['list_most_frequent_im'] = list_most_frequent_im
+        if indicator_export:
+            list_most_frequent_ex = TableMaker.get_dict_most_frequent(products_export_cur)
+            context['list_most_frequent_ex'] = list_most_frequent_ex
+        if indicator_import:
+            list_most_frequent_im = TableMaker.get_dict_most_frequent(products_import_cur)
+            context['list_most_frequent_im'] = list_most_frequent_im
 
         #Наибольший прирост объема:
-        product_group_rates_ex = TableMaker.get_table_rates_by_sectors(products_export_pre, products_export_cur)
-        context['product_group_rates_ex'] = product_group_rates_ex
-        product_group_rates_im = TableMaker.get_table_rates_by_sectors(products_import_pre, products_import_cur)
-        context['product_group_rates_im'] = product_group_rates_im
+        if indicator_export:
+            product_group_rates_ex = TableMaker.get_table_rates_by_sectors(products_export_pre, products_export_cur)
+            context['product_group_rates_ex'] = product_group_rates_ex
+        if indicator_import:
+            product_group_rates_im = TableMaker.get_table_rates_by_sectors(products_import_pre, products_import_cur)
+            context['product_group_rates_im'] = product_group_rates_im
 
         # ВСЕГО (одна строчка) по региону (экспорт + импорт)
-        name = "RegionFrom_8.xlsx"
-        form = 8
-        parser2.get_doc_by_form(docs_links_current, name, form)
-        df_form8 = parser2.get_df_doc8(name)
+        #name = "RegionFrom_8.xlsx"
+        #form = 8
+        #self.parser2.get_doc_by_form(docs_links_current, name, form)
+        #df_form8 = self.parser2.get_df_doc8(name)
 
         # Доля в ФО, РФ
         # ****
@@ -197,9 +199,27 @@ class Organizer:
         # Индикаторы ВЭД
         doc.render(context)
         # сохраняем и смотрим, что получилось
-        doc.save("generated_doca.docx")
-        table_indicators = TableMaker.get_indicators(products_export_cur.values(),df_form8['Экспорт'],
-                                                     import_current, df_form8['Импорт'])
+        filename = "Report_"+ country + "_" + region +".docx"
+        doc.save(filename)
+        if os.path.exists('ExportRegionPie.png'):
+            os.remove('ExportRegionPie.png')
+        if os.path.exists('ExportRussiaBar.png'):
+            os.remove('ExportRussiaBar.png')
+        if os.path.exists('ExportRussiaPie.png'):
+            os.remove('ExportRussiaPie.png')
+        if os.path.exists('ImportRegionPie.png'):
+            os.remove('ImportRegionPie.png')
+        if os.path.exists('ImportRussiaBar.png'):
+            os.remove('ImportRussiaBar.png')
+        if os.path.exists('ImportRussiaPie.png'):
+            os.remove('ImportRussiaPie.png')
+        filename = "RegionFrom_6_" + str(year_current) +".xlsx"
+        os.remove(filename)
+        filename = "RegionFrom_6_" + str(year_previous) +".xlsx"
+        os.remove(filename)
+
+        #table_indicators = TableMaker.get_indicators(products_export_cur.values(),df_form8['Экспорт'],
+                                                     #import_current, df_form8['Импорт'])
 
 
     @staticmethod
@@ -240,7 +260,10 @@ class Organizer:
         keys = [key for key in products if
                 products.get(key) / all_values_summ < 0.03 and key != "Прочие товары"]
         extra = [products.get(key) for key in keys]
-        summ_extra = sum(extra) + products["Прочие товары"]
+        if not "Прочие товары" in products.keys():
+            summ_extra = sum(extra)
+        else:
+            summ_extra = sum(extra) + products["Прочие товары"]
         for key in keys:
             products.pop(key)
         products.update({"Прочие товары": summ_extra})
